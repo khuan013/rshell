@@ -6,47 +6,52 @@
 #include <sys/wait.h>
 #include <stdio.h>
 #include <errno.h>
+#include <vector>
 
 using namespace std;
 
 int main() {
 
-
-
+    char buffer[512];
+    vector<string> input; 
 
     while (1) {
-		
-	string cmd;
-	string arg1;
-	string arg2;
 
+	if (input.size() != 0)
+	    input.clear();
+		
 	cout << "Please enter cmd: ";
-	getline(cin, cmd);
-	cout << "Please enter arg1: ";
-	getline(cin, arg1);
-	cout << "Please enter arg2: ";
-	getline(cin, arg2);
+	fgets(buffer, 512, stdin);
+	
+	char * pch;
+	pch = strtok (buffer, " \n");
+	while (pch!= NULL) {
+	    input.push_back(pch);
+	    pch = strtok (NULL, " \n");
+	}
+
 
 
 	
 	int pid=fork();
 	if (pid ==0) {
 
-	   cout << "i'm a child\n";
-	    char * argv[4];
+	    char * argv[input.size()+1];
 
-	    argv[0] = new char[3];
-	    argv[1] = new char[3];
-	    argv[2] = new char[3];
 
-	    strcpy(argv[0], cmd.c_str());
-	    strcpy(argv[1], arg1.c_str());
-	    strcpy(argv[2], arg2.c_str());
-	    argv[3] = NULL;
+	    for (int i = 0; i <= input.size(); i++) {
+		argv[i] = new char[5];
+		if (i != input.size())
+		    strcpy(argv[i], input[i].c_str());
+	    }
 
-	    cout << "I REACHED EXECVP!!\n";
+	    argv[input.size()] = NULL;
 
-	    execvp(cmd.c_str(), argv);
+
+
+	    int r = execvp(argv[0], argv);
+	    if (r == -1)
+		perror("execvp");
 
 
 	}
@@ -58,5 +63,5 @@ int main() {
 
     }
     
-    return 0;
+    return 0; 
 }
