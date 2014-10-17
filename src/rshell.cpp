@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <vector>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -47,7 +48,9 @@ int main() {
 
 	    argv[input.size()] = NULL;
 
-
+	    if (strcmp(argv[0], "exit") == 0) {
+		exit(0);
+	    }
 
 	    int r = execvp(argv[0], argv);
 	    if (r == -1)
@@ -56,10 +59,10 @@ int main() {
 
 	}
 	else {
-	    wait(NULL);
-	
 
-	}	
+
+	    wait(NULL);
+	    	}	
 
     }
     
