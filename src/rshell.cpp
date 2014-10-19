@@ -49,6 +49,10 @@ void execute(vector<string> & input, int start, int end) {
 	
 }
 
+
+
+
+
 int main() {
 
     char buffer[512];
@@ -76,23 +80,42 @@ int main() {
 	    int end = input.size();
 	    int i;
 	    
-	    // Check for semi colons
-	    for (i = 0; i < input.size(); i++) {
-		if (input[i][(input[i].length() -1)] == ';') {
-		    end = i;
-		    pid2 = fork();
-		    break;
-		}
-	    }
-	   
-	    if (pid2==0) {
-		start = i+1;
+
+		
+loop:		
 		end = input.size();
-	    }
+		for (i = start; i < input.size(); i++) {
 
-	    execute(input, start, end);
+		    // Check for semi colons
+		    if (input[i][input[i].size() - 1] == ';' || input[i] == ";") {
+			
+			pid2 = fork();
+			
+			if (pid2!=0) {
+			    start = i + 1;
+			    goto loop;
+			}
+			if (input[i] != ";") {
+			    input[i] = input[i].substr(0, input[i].size() -1);
+			    end = i+1;
+			}
+			else 
+			    end = i;
+		    
+			break;
+		    }
+		}
 
-	}
+		if (pid2 != 0)
+		    wait(NULL);
+	   
+		
+
+		execute(input, start, end);
+	
+	
+	
+	}   	
 	else {
 	    while(wait(NULL) > 0);
 	}
