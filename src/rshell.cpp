@@ -140,44 +140,28 @@ loop:
 	    end = input.size();
 	    for (i = start; i < input.size(); i++) {
 
-		// Check for semi colons
-		if (input[i] == ";") {
-			
+		
+		if (input[i] == ";" || input[i] == "&&" || input[i] == "||") {
+		    string connector = input[i];
+
 		    pid2 = fork();
 		    if (pid2 == -1) {
 			perror("There was an error with fork(). ");
 			exit(1);
 		    }
-			
 		    if (pid2!=0) {
-			if (-1 == wait(&status)) 
+			if (-1 == wait(&status))
 			    perror("There was an error with wait().");
+			
+			if (connector == "&&" && status != 0)
+			    exit(1);
+
+			if (connector == "||" && status == 0)
+			    exit(0);
+
 			start = i + 1;
 			goto loop;
-		    }
-		    else {
-			end = i;
-			break;
-		    }
-		    
-		}
-	    
-		else if (input[i] == "&&") {
-		    int pid3 = fork();
-		    if (pid3 == -1) {
-			perror("There was an error with fork(). ");
-			exit(1);
-		    }
 
-		    if (pid3!=0) {
-			if (-1 == wait(&status)) 
-			    perror("There was an error with wait().");
-			
-			if(status != 0) {
-			    exit(1);
-			}
-			start = i+1;
-			goto loop;
 		    }
 		    else {
 			end = i;
@@ -185,33 +169,8 @@ loop:
 		    }
 
 		}
-		
-		else if (input[i] == "||") {
-		    int pid4 = fork();
-		    if (pid4 == -1) {
-			perror("There was an error with fork(). ");
-			exit(1);
-		    }
-
-		    if (pid4!=0) {
-			if (-1 == wait(&status)) 
-			    perror("There was an error with wait().");
-			
-			if (status == 0){
-			    exit(0);
-			}
-			else {
-			    start = i+1;
-			    goto loop;
-			}
-		    }
-		    else {
-			end = i;
-			break;
-		    }
-		}
-		
 	    }
+
 
 
 	    execute(input, start, end);
