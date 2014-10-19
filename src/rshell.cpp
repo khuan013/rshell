@@ -82,7 +82,8 @@ void parse(char* line, vector<string> & input) {
 void execute(vector<string> & input, int start, int end) {
 
     //Call execvp, based on which elements in the string vector to use
-    char * argv[(end - start)+1];
+    char * argv[5];
+	    
 	    int i = 0;
 	    
 	    for (i = 0; i <= (end - start); i++) {
@@ -131,7 +132,7 @@ int main() {
 
 	    int start = 0;
 	    int end = input.size();
-	    int i;
+	    unsigned i;
 	    
 
 		
