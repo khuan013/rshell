@@ -8,6 +8,6 @@ rshell:
 	mv rshell ../bin
 
 clean:
-	rm -r bin
+	rm -rf bin
 
 new: clean all

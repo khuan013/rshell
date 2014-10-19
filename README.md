@@ -18,3 +18,40 @@ File List
 ```
 .:
 Makefile
+
+LICENSE
+
+README.md
+
+./src
+
+./tests
+```
+```
+/src:
+
+rshell.cpp
+```
+```
+/tests:
+exec.script
+```
+
+How to run file
+---------------
+1. `cd` into `rshell` directory
+2. Call `make`
+3. `cd` into `bin`
+4. call `rshell`
+
+Rshell runs instead of bash, type `exit` to quit the program.
+
+Overview
+------------
+This program was created to be a simple command shell.
+It can take in multiple commands using the connectors, `&&` `||` and `;`.
+Uses `wait()`, `fork()` and  `execvp()` to call functions.
+
+Bugs
+----------
+To be discovered.
