@@ -31,9 +31,12 @@ void parse(char* line, vector<string> & input) {
 	    char * b = strstr(pch, "||");
 	    char * c = strstr(pch, ";");
 
+	    // If there are connectors, break up the string
+	    // into parts and add them individually to the vector
 	    if (a!=NULL || b!=NULL || c!=NULL) {
 		while (strlen(pch) != 0 ) {
-		    
+
+		    // Checks for && and ||
 		    if (*pch == '&' || *pch == '|') {
 			
 			string tmp;
@@ -45,6 +48,7 @@ void parse(char* line, vector<string> & input) {
 			memmove(pch, pch+2, strlen(pch) - 2);
 			pch[strlen(pch)-2] = '\0';
 		    }
+		    // Check for semicolons
 		    else if (*pch == ';') {
 			input.push_back(";");
 			memmove(pch, pch+1, strlen(pch) -1);
@@ -72,7 +76,8 @@ void parse(char* line, vector<string> & input) {
 		    c = strstr(pch, ";");
 		}
 	    }
-			
+
+	    // If no connectors, just add to vector	
 	    if (*pch != '\0' && *pch != '\n')
 		input.push_back(pch);
 	    pch = strtok (NULL, " \n");
@@ -92,7 +97,6 @@ void execute(vector<string> & input, int start, int end) {
 
 	    for (i = 0; i < (end-start); i++) {
 		strcpy(argv[i], input[i+start].c_str());
-
 	    }
 	    
 	    argv[i] = NULL;
@@ -101,7 +105,6 @@ void execute(vector<string> & input, int start, int end) {
 	    if (status == -1)
 		perror("execvp");
 		exit(1); 
-	
 }
 
 
@@ -109,14 +112,31 @@ int main() {
 
     char buffer[512];
     vector<string> input; 
+    
+    // Get username
+    char * usrname = getlogin();
+    if (usrname == NULL){
+	perror ("Error getting user name");
+	exit(1);
+    }
 
+    // Get hostname
+    char hostname[20];
+
+    if (gethostname(hostname, sizeof hostname) ==-1) {
+	perror("Error getting hostname");
+	exit(1);
+    }
+
+
+    // Main loop
     while (1) {
 	
 	status = 0;
 	if (input.size() != 0)
 	    input.clear();
 		
-	cout << "Please enter cmd: ";
+	cout << usrname << "@" << hostname <<"$ ";
 	fgets(buffer, 512, stdin);
 
 	parse(buffer, input);	
@@ -133,8 +153,6 @@ int main() {
 	    int start = 0;
 	    int end = input.size();
 	    unsigned i;
-	    
-
 		
 loop:		
 	    end = input.size();
@@ -167,21 +185,14 @@ loop:
 			end = i;
 			break;
 		    }
-
 		}
 	    }
 
-
-
 	    execute(input, start, end);
 
-
 	}   	
-	else {
+	else 
 	    wait(NULL);
-	}
-
-    
     }
     
     return 0; 
