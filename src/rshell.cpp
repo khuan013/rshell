@@ -78,7 +78,7 @@ void parse(char* line, vector<string> & input) {
 	    }
 
 	    // If no connectors, just add to vector	
-	    if (*pch != '\0' && *pch != '\n')
+	    if (*pch != '\0' && *pch != '\n' && *pch != '#')
 		input.push_back(pch);
 	    pch = strtok (NULL, " \n");
 	}
@@ -141,8 +141,11 @@ int main() {
 
 	parse(buffer, input);	
 
+	if (input.size() == 0)
+	    continue;
+	
 	if (strcmp(input[0].c_str(), "exit") == 0)
-		exit(0);
+	    exit(0);
 
 
 	int pid=fork();
@@ -155,6 +158,7 @@ int main() {
 	    unsigned i;
 		
 loop:		
+
 	    end = input.size();
 	    for (i = start; i < input.size(); i++) {
 
