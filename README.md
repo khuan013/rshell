@@ -42,7 +42,7 @@ How to run file
 1. `cd` into `rshell` directory
 2. Call `make`
 3. `cd` into `bin`
-4. call `rshell`
+4. Call `rshell`
 
 Rshell runs instead of bash, type `exit` to quit the program.
 
@@ -52,6 +52,15 @@ This program was created to be a simple command shell.
 It can take in multiple commands using the connectors, `&&` `||` and `;`.
 Uses `wait()`, `fork()` and  `execvp()` to call functions.
 
-Bugs
+Parses the input by breaking it up into a string vector, and then determines
+which elements should be sent to execvp.
+
+Also displays the user and hostname of the machine the user is logged into.
+
+Bugs and Limitations
 ----------
-To be discovered.
+* When running the program in a script on local machine,
+the getlogin() function causes an error.
+* Does not handle mixing && and || the same as BASH
+* Does not handle quotation marks
+* To be discovered.
