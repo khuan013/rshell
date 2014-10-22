@@ -66,4 +66,4 @@ Bugs and Limitations
 * When running the program in a script on local machine,
 the getlogin() function causes an error.
 * Does not handle comments # in quotations marks when using echo.
-* Typing an odd number of `&` or `|` characters will cause a seg fault.
+* Typing an odd number of `&` or `|` characters will cause a seg fault. (fixed)
