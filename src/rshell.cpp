@@ -36,7 +36,8 @@ void parse(char * line, vector<string> & input) {
 		while (strlen(pch) != 0 ) {
 
 		    // Checks for && and ||
-		    if (*pch == '&' || *pch == '|') {
+		    if ((pch[0] == '&' && pch[1] == '&') ||
+			(pch[0] == '|' && pch[1] == '|')) {
 			
 			string tmp;
 			tmp += *pch;
