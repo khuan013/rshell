@@ -65,4 +65,4 @@ Bugs and Limitations
 ----------
 * When running the program in a script on local machine,
 the getlogin() function causes an error.
-* Does not handle quotation marks
+* Does not handle quotation marks or parantheses.
