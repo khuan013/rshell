@@ -1,195 +1,188 @@
-Script started on Mon 20 Oct 2014 09:50:21 PM PDT
+Script started on Tue 21 Oct 2014 08:52:34 PM PDT
 ~
-khuan013@well $ #Kenneth Huang
+khuan013@hammer $ #Kenneth Huang 860993337
 ~
-khuan013@well $ #thi[K[K[KThis is my exec.script to test hw0 rshell
+khuan013@hammer $ #this[K[K[K[KThis is my exec.script to testl hw0 rshell
 ~
-khuan013@well $ cd
+khuan013@hammer $ cd
 ~
-khuan013@well $ cd rshell
+khuan013@hammer $ cd rshell
 ~/rshell
-khuan013@well $ ls
-[00m[00mLICENSE[00m  [00mMakefile[00m  [00mREADME.md[00m  [00;34msrc[00m/  [00;34mtests[00m/
+khuan013@hammer $ ls
+LICENSE  Makefile  README.md  [0m[01;34msrc[0m/  [01;34mtests[0m/
 [m~/rshell
-khuan013@well $ #Testing Makefile
+khuan013@hammer $ #Testing Makefile
 ~/rshell
-khuan013@well $ make all
+khuan013@hammer $ make all
 mkdir -p bin
 cd src && g++ -Wall -Werror -ansi -pedantic -o rshell rshell.cpp &&\
 	mv rshell ../bin
 ~/rshell
-khuan013@well $ ls
-[00m[00;34mbin[00m/  [00mLICENSE[00m  [00mMakefile[00m  [00mREADME.md[00m  [00;34msrc[00m/  [00;34mtests[00m/
+khuan013@hammer $ ls
+[0m[01;34mbin[0m/  LICENSE  Makefile  README.md  [01;34msrc[0m/  [01;34mtests[0m/
 [m~/rshell
-khuan013@well $ #Attemptt[King to run program
+khuan013@hammer $ #attempting to r[K[K[K[K[K[K[K[K[K[K[K[K[K[K[KAttempting to run the [K[K[K[Kprogram
 ~/rshell
-khuan013@well $ bin/rshell
-khuan013@well.cs.ucr.edu$ #Testing simple commands               comments
-khuan013@well.cs.ucr.edu$ #Now Testin        tes       Testing simple commands
-khuan013@well.cs.ucr.edu$ ls
+khuan013@hammer $ bin/rshell
+khuan013@hammer.cs.ucr.edu$ #Testing comments at the beginning of input
+khuan013@hammer.cs.ucr.edu$ #Testing simple commands
+khuan013@hammer.cs.ucr.edu$ ls
 bin  LICENSE  Makefile	README.md  src	tests
-khuan013@well.cs.ucr.edu$ pwd
+khuan013@hammer.cs.ucr.edu$ pwd
 /home/csmajs/khuan013/rshell
-khuan013@well.cs.ucr.edu$ #Testing sim   ls with arguments
-khuan013@well.cs.ucr.edu$ ls -l
+khuan013@hammer.cs.ucr.edu$ #Testing ls with arguments
+khuan013@hammer.cs.ucr.edu$ ls -l
 total 24
-drwx------ 2 khuan013 csmajs 4096 Oct 20 21:50 bin
--rw------- 1 khuan013 csmajs 1076 Oct 20 21:48 LICENSE
--rw------- 1 khuan013 csmajs  181 Oct 20 21:48 Makefile
--rw------- 1 khuan013 csmajs  800 Oct 20 21:48 README.md
-drwx------ 2 khuan013 csmajs 4096 Oct 20 21:50 src
-drwx------ 2 khuan013 csmajs 4096 Oct 20 21:50 tests
-khuan013@well.cs.ucr.edu$ ls -a
-.  ..  bin  .git  LICENSE  Makefile  README.md	src  tests
-khuan013@well.cs.ucr.edu$ ls -la
+drwx------ 2 khuan013 csmajs 4096 Oct 21 20:53 bin
+-rw------- 1 khuan013 csmajs 1076 Oct 21 20:51 LICENSE
+-rw------- 1 khuan013 csmajs  181 Oct 21 20:51 Makefile
+-rw------- 1 khuan013 csmajs 1338 Oct 21 20:51 README.md
+drwx------ 2 khuan013 csmajs 4096 Oct 21 20:53 src
+drwx------ 2 khuan013 csmajs 4096 Oct 21 20:52 tests
+khuan013@hammer.cs.ucr.edu$ ls -a -l
 total 36
-drwx------  6 khuan013 csmajs 4096 Oct 20 21:50 .
-drwx------ 33 khuan013 csmajs 4096 Oct 20 21:48 ..
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 bin
-drwx------  8 khuan013 csmajs 4096 Oct 20 21:48 .git
--rw-------  1 khuan013 csmajs 1076 Oct 20 21:48 LICENSE
--rw-------  1 khuan013 csmajs  181 Oct 20 21:48 Makefile
--rw-------  1 khuan013 csmajs  800 Oct 20 21:48 README.md
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 src
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 tests
-khuan013@well.cs.ucr.edu$ ls -l -a
+drwx------  6 khuan013 csmajs 4096 Oct 21 20:53 .
+drwx------ 33 khuan013 csmajs 4096 Oct 21 20:51 ..
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:53 bin
+drwx------  8 khuan013 csmajs 4096 Oct 21 20:51 .git
+-rw-------  1 khuan013 csmajs 1076 Oct 21 20:51 LICENSE
+-rw-------  1 khuan013 csmajs  181 Oct 21 20:51 Makefile
+-rw-------  1 khuan013 csmajs 1338 Oct 21 20:51 README.md
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:53 src
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:52 tests
+khuan013@hammer.cs.ucr.edu$ ls - al   al
 total 36
-drwx------  6 khuan013 csmajs 4096 Oct 20 21:50 .
-drwx------ 33 khuan013 csmajs 4096 Oct 20 21:48 ..
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 bin
-drwx------  8 khuan013 csmajs 4096 Oct 20 21:48 .git
--rw-------  1 khuan013 csmajs 1076 Oct 20 21:48 LICENSE
--rw-------  1 khuan013 csmajs  181 Oct 20 21:48 Makefile
--rw-------  1 khuan013 csmajs  800 Oct 20 21:48 README.md
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 src
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 tests
-khuan013@well.cs.ucr.edu$ #Now    T  Testing echo
-khuan013@well.cs.ucr.edu$ echo HELLO
+drwx------  6 khuan013 csmajs 4096 Oct 21 20:53 .
+drwx------ 33 khuan013 csmajs 4096 Oct 21 20:51 ..
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:53 bin
+drwx------  8 khuan013 csmajs 4096 Oct 21 20:51 .git
+-rw-------  1 khuan013 csmajs 1076 Oct 21 20:51 LICENSE
+-rw-------  1 khuan013 csmajs  181 Oct 21 20:51 Makefile
+-rw-------  1 khuan013 csmajs 1338 Oct 21 20:51 README.md
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:53 src
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:52 tests
+khuan013@hammer.cs.ucr.edu$ #Testing echo
+khuan013@hammer.cs.ucr.edu$ echo HELLO
 HELLO
-khuan013@well.cs.ucr.edu$ echo HELL   ello world!!
-Hello world!!
-khuan013@well.cs.ucr.edu$ #Testi      #Testing the ; connector
-khuan013@well.cs.ucr.edu$ ls;pwd
+khuan013@hammer.cs.ucr.edu$ echo Hello world!!!
+Hello world!!!
+khuan013@hammer.cs.ucr.edu$ echo This is testing come ments #should not be see   echoed
+This is testing comments
+khuan013@hammer.cs.ucr.edu$ #Testing the ; connector
+khuan013@hammer.cs.ucr.edu$ kslowd'       ls;pwd
 bin  LICENSE  Makefile	README.md  src	tests
 /home/csmajs/khuan013/rshell
-khuan013@well.cs.ucr.edu$ ls ; pwd
+khuan013@hammer.cs.ucr.edu$ ls ; pwd
 bin  LICENSE  Makefile	README.md  src	tests
 /home/csmajs/khuan013/rshell
-khuan013@well.cs.ucr.edu$ ls; pwd
+khuan013@hammer.cs.ucr.edu$ ls;;pwd
 bin  LICENSE  Makefile	README.md  src	tests
 /home/csmajs/khuan013/rshell
-khuan013@well.cs.ucr.edu$ ls                            lw ; pwd; ls            ls -l -a; pwd; ls
+khuan013@hammer.cs.ucr.edu$ ls -la; pwd; ls
 total 36
-drwx------  6 khuan013 csmajs 4096 Oct 20 21:50 .
-drwx------ 33 khuan013 csmajs 4096 Oct 20 21:48 ..
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 bin
-drwx------  8 khuan013 csmajs 4096 Oct 20 21:48 .git
--rw-------  1 khuan013 csmajs 1076 Oct 20 21:48 LICENSE
--rw-------  1 khuan013 csmajs  181 Oct 20 21:48 Makefile
--rw-------  1 khuan013 csmajs  800 Oct 20 21:48 README.md
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 src
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 tests
+drwx------  6 khuan013 csmajs 4096 Oct 21 20:53 .
+drwx------ 33 khuan013 csmajs 4096 Oct 21 20:51 ..
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:53 bin
+drwx------  8 khuan013 csmajs 4096 Oct 21 20:51 .git
+-rw-------  1 khuan013 csmajs 1076 Oct 21 20:51 LICENSE
+-rw-------  1 khuan013 csmajs  181 Oct 21 20:51 Makefile
+-rw-------  1 khuan013 csmajs 1338 Oct 21 20:51 README.md
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:53 src
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:52 tests
 /home/csmajs/khuan013/rshell
 bin  LICENSE  Makefile	README.md  src	tests
-khuan013@well.cs.ucr.edu$ ls;;;; pwd
+khuan013@hammer.cs.ucr.edu$ ;;;ls
+bin  LICENSE  Makefile	README.md  src	tests
+khuan013@hammer.cs.ucr.edu$ ls;;;;;
+bin  LICENSE  Makefile	README.md  src	tests
+khuan013@hammer.cs.ucr.edu$ #Testing the && connector
+khuan013@hammer.cs.ucr.edu$ ls && pwd
 bin  LICENSE  Makefile	README.md  src	tests
 /home/csmajs/khuan013/rshell
-khuan013@well.cs.ucr.edu$ #Testing the && connector
-khuan013@well.cs.ucr.edu$ ls && powd   wd
-bin  LICENSE  Makefile	README.md  src	tests
-/home/csmajs/khuan013/rshell
-khuan013@well.cs.ucr.edu$ ls && pwd && echo hello
+khuan013@hammer.cs.ucr.edu$ ls&&pwd&& echo hello && pwd
 bin  LICENSE  Makefile	README.md  src	tests
 /home/csmajs/khuan013/rshell
 hello
-khuan013@well.cs.ucr.edu$ ls&&pwd&&echo test
-bin  LICENSE  Makefile	README.md  src	tests
 /home/csmajs/khuan013/rshell
-test
-khuan013@well.cs.ucr.edu$ lsor    noncommand && ls
+khuan013@hammer.cs.ucr.edu$ no  ls &&     noncommand && ls
 execvp: No such file or directory
-khuan013@well.cs.ucr.edu$ ls &    #Testing the || connector
-khuan013@well.cs.ucr.edu$ ls || pwd
-bin  LICENSE  Makefile	README.md  src	tests
-khuan013@well.cs.ucr.edu$ ls||pwd||ls
-bin  LICENSE  Makefile	README.md  src	tests
-khuan013@well.cs.ucr.edu$ ls -a la ||pwd
-total 36
-drwx------  6 khuan013 csmajs 4096 Oct 20 21:50 .
-drwx------ 33 khuan013 csmajs 4096 Oct 20 21:48 ..
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 bin
-drwx------  8 khuan013 csmajs 4096 Oct 20 21:48 .git
--rw-------  1 khuan013 csmajs 1076 Oct 20 21:48 LICENSE
--rw-------  1 khuan013 csmajs  181 Oct 20 21:48 Makefile
--rw-------  1 khuan013 csmajs  800 Oct 20 21:48 README.md
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 src
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 tests
-khuan013@well.cs.ucr.edu$ noncommand || ls
+khuan013@hammer.cs.ucr.edu$ pwd && noncommand && ls
+/home/csmajs/khuan013/rshell
 execvp: No such file or directory
+khuan013@hammer.cs.ucr.edu$ #Testing the }|  || connector
+khuan013@hammer.cs.ucr.edu$ ls || pwd
 bin  LICENSE  Makefile	README.md  src	tests
-khuan013@well.cs.ucr.edu$ #Testing comments in the middle of input
-khuan013@well.cs.ucr.edu$ ls -   -lR
-.:
-total 24
-drwx------ 2 khuan013 csmajs 4096 Oct 20 21:50 bin
--rw------- 1 khuan013 csmajs 1076 Oct 20 21:48 LICENSE
--rw------- 1 khuan013 csmajs  181 Oct 20 21:48 Makefile
--rw------- 1 khuan013 csmajs  800 Oct 20 21:48 README.md
-drwx------ 2 khuan013 csmajs 4096 Oct 20 21:50 src
-drwx------ 2 khuan013 csmajs 4096 Oct 20 21:50 tests
-
-./bin:
-total 28
--rwx------ 1 khuan013 csmajs 26562 Oct 20 21:50 rshell
-
-./src:
-total 4
--rw------- 1 khuan013 csmajs 3725 Oct 20 21:48 rshell.cpp
-
-./tests:
-total 0
--rw------- 1 khuan013 csmajs 0 Oct 20 21:50 exec.script
-khuan013@well.cs.ucr.edu$ ls #-lr
+khuan013@hammer.cs.ucr.edu$ ls || ls || pwd
 bin  LICENSE  Makefile	README.md  src	tests
-khuan013@well.cs.ucr.edu$ ls # lR
-bin  LICENSE  Makefile	README.md  src	tests
-khuan013@well.cs.ucr.edu$ # Test     Testing for large input
-khuan013@well.cs.ucr.edu$ ls -la && pwd || ls; echo HELLO WORLD!!!; ls && pwd && ls
+khuan013@hammer.cs.ucr.edu$ noncommand || pwd
+execvp: No such file or directory
+/home/csmajs/khuan013/rshell
+khuan013@hammer.cs.ucr.edu$ noncommand || nocommand || ls -la
+execvp: No such file or directory
+execvp: No such file or directory
 total 36
-drwx------  6 khuan013 csmajs 4096 Oct 20 21:50 .
-drwx------ 33 khuan013 csmajs 4096 Oct 20 21:48 ..
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 bin
-drwx------  8 khuan013 csmajs 4096 Oct 20 21:48 .git
--rw-------  1 khuan013 csmajs 1076 Oct 20 21:48 LICENSE
--rw-------  1 khuan013 csmajs  181 Oct 20 21:48 Makefile
--rw-------  1 khuan013 csmajs  800 Oct 20 21:48 README.md
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 src
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 tests
+drwx------  6 khuan013 csmajs 4096 Oct 21 20:53 .
+drwx------ 33 khuan013 csmajs 4096 Oct 21 20:51 ..
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:53 bin
+drwx------  8 khuan013 csmajs 4096 Oct 21 20:51 .git
+-rw-------  1 khuan013 csmajs 1076 Oct 21 20:51 LICENSE
+-rw-------  1 khuan013 csmajs  181 Oct 21 20:51 Makefile
+-rw-------  1 khuan013 csmajs 1338 Oct 21 20:51 README.md
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:53 src
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:52 tests
+khuan013@hammer.cs.ucr.edu$ ||   pwd
 /home/csmajs/khuan013/rshell
-khuan013@well.cs.ucr.edu$ ls -la && pwd  ; ls; echo HELO LO WORLD!!!!; ls && pwd && ls &* & echo testing
+khuan013@hammer.cs.ucr.edu$ #Testing comments in the middle of commands
+khuan013@hammer.cs.ucr.edu$ ls; pwd; #ls -la
+bin  LICENSE  Makefile	README.md  src	tests
+/home/csmajs/khuan013/rshell
+khuan013@hammer.cs.ucr.edu$ @ #Attempting ro  to run rshell
+khuan013@hammer.cs.ucr.edu$ bin/rshell
+khuan013@hammer.cs.ucr.edu$ ls
+bin  LICENSE  Makefile	README.md  src	tests
+khuan013@hammer.cs.ucr.edu$ pwd
+/home/csmajs/khuan013/rshell
+khuan013@hammer.cs.ucr.edu$ #Testing larger input
+khuan013@hammer.cs.ucr.edu$ ls; ls-la; pwd; echo HELLO EVERYONE!!!!!; pwd ; ls; pwd; ls; pwd
+bin  LICENSE  Makefile	README.md  src	tests
+execvp: No such file or directory
+/home/csmajs/khuan013/rshell
+HELLO EVERYONE!!!!!
+/home/csmajs/khuan013/rshell
+bin  LICENSE  Makefile	README.md  src	tests
+/home/csmajs/khuan013/rshell
+bin  LICENSE  Makefile	README.md  src	tests
+/home/csmajs/khuan013/rshell
+khuan013@hammer.cs.ucr.edu$ #Testing combining connectors
+khuan013@hammer.cs.ucr.edu$ ls && powd   wd; ls -la; pwd && echo Hello!!; ls || pwd && echo Shoudln   ldn't reach here
+bin  LICENSE  Makefile	README.md  src	tests
+/home/csmajs/khuan013/rshell
 total 36
-drwx------  6 khuan013 csmajs 4096 Oct 20 21:50 .
-drwx------ 33 khuan013 csmajs 4096 Oct 20 21:48 ..
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 bin
-drwx------  8 khuan013 csmajs 4096 Oct 20 21:48 .git
--rw-------  1 khuan013 csmajs 1076 Oct 20 21:48 LICENSE
--rw-------  1 khuan013 csmajs  181 Oct 20 21:48 Makefile
--rw-------  1 khuan013 csmajs  800 Oct 20 21:48 README.md
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 src
-drwx------  2 khuan013 csmajs 4096 Oct 20 21:50 tests
+drwx------  6 khuan013 csmajs 4096 Oct 21 20:53 .
+drwx------ 33 khuan013 csmajs 4096 Oct 21 20:51 ..
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:53 bin
+drwx------  8 khuan013 csmajs 4096 Oct 21 20:51 .git
+-rw-------  1 khuan013 csmajs 1076 Oct 21 20:51 LICENSE
+-rw-------  1 khuan013 csmajs  181 Oct 21 20:51 Makefile
+-rw-------  1 khuan013 csmajs 1338 Oct 21 20:51 README.md
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:53 src
+drwx------  2 khuan013 csmajs 4096 Oct 21 20:52 tests
 /home/csmajs/khuan013/rshell
+Hello!!
 bin  LICENSE  Makefile	README.md  src	tests
-HELLO WORLD!!!!
+khuan013@hammer.cs.ucr.edu$ #Now testing the exit handling
+khuan013@hammer.cs.ucr.edu$ exit
+khuan013@hammer.cs.ucr.edu$ ls
 bin  LICENSE  Makefile	README.md  src	tests
-/home/csmajs/khuan013/rshell
-bin  LICENSE  Makefile	README.md  src	tests
-testing
-khuan013@well.cs.ucr.edu$ #Now testing the exit handling
-khuan013@well.cs.ucr.edu$ exit
+khuan013@hammer.cs.ucr.edu$ #This concludes the testing script for hw0 rshell
+khuan013@hammer.cs.ucr.edu$ exit
 ~/rshell
-khuan013@well $ #This concludes[Ks the sc[K[Ktesting script for rshell[K[K[K[K[K[Khw0 rshell
+khuan013@hammer $ ls
+[0m[01;34mbin[0m/  LICENSE  Makefile  README.md  [01;34msrc[0m/  [01;34mtests[0m/
+[m~/rshell
+khuan013@hammer $ #Ran rshell twice, so needed to exit twice
 ~/rshell
-khuan013@well $ exit
+khuan013@hammer $ exit
 exit
 
-Script done on Mon 20 Oct 2014 10:02:18 PM PDT
+Script done on Tue 21 Oct 2014 09:06:17 PM PDT
