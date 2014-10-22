@@ -12,9 +12,8 @@
 
 using namespace std;
 
-int status = 0;
 
-void parse(char* line, vector<string> & input) {
+void parse(char * line, vector<string> & input) {
     
 
     char * pch;
@@ -101,7 +100,7 @@ void execute(vector<string> & input, int start, int end) {
 	    
 	    argv[i] = NULL;
 
-	    status = execvp(argv[0], argv);
+	    int status = execvp(argv[0], argv);
 	    if (status == -1)
 		perror("execvp");
 		exit(1); 
@@ -110,9 +109,9 @@ void execute(vector<string> & input, int start, int end) {
 
 int main() {
 
-    char buffer[512];
     vector<string> input; 
-    
+    int status=0;
+
     // Get username
     char * usrname = getlogin();
     if (usrname == NULL){
@@ -129,6 +128,7 @@ int main() {
     }
 
 
+
     // Main loop
     while (1) {
 	
@@ -137,9 +137,15 @@ int main() {
 	    input.clear();
 		
 	cout << usrname << "@" << hostname <<"$ ";
-	fgets(buffer, 512, stdin);
 
-	parse(buffer, input);	
+	string string1;
+	getline(cin, string1);
+	char * line = new char [string1.length() + 1];
+	strcpy(line, string1.c_str());
+
+	parse(line, input);
+
+	delete line;
 
 	if (input.size() == 0)
 	    continue;
@@ -195,8 +201,11 @@ loop:
 	    execute(input, start, end);
 
 	}   	
-	else 
-	    wait(NULL);
+	else { 
+	    status = wait(NULL);
+	    if (status == -1)
+		perror("There was an error with wait().");
+	}
     }
     
     return 0; 

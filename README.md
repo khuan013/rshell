@@ -1,10 +1,10 @@
 RSHELL
-===
+====
 
 Licensing Information: READ LICENSE
 ---
 Project source can be downloaded from https://github.com/khuan013/rshell.git
-----
+---
 
 Author & Contributor List
 ----------
@@ -55,12 +55,14 @@ Uses `wait()`, `fork()` and  `execvp()` to call functions.
 Parses the input by breaking it up into a string vector, and then determines
 which elements should be sent to execvp.
 
+Connectors work based on the most recent command. If the command before an &&
+did not succeed, no further commands will be executed. If a command before an
+|| does succeed, no further commands will be executed.
+
 Also displays the user and hostname of the machine the user is logged into.
 
 Bugs and Limitations
 ----------
 * When running the program in a script on local machine,
 the getlogin() function causes an error.
-* Does not handle mixing && and || the same as BASH
 * Does not handle quotation marks
-* To be discovered.
