@@ -96,7 +96,7 @@ void displayfile(string filename, struct stat* sb, int l_flag) {
 
         // Output last modified time
         time_t t = sb->st_mtime;
-        struct tm * lt = gmtime(&t);
+        struct tm * lt = localtime(&t);
         char date[80];
         strftime(date, sizeof(date), "%h %d %R ", lt);
         cout << " " << date << filename;
@@ -181,7 +181,6 @@ int main(int argc, char ** argv) {
 
 
 
-    cout << endl;
 
     return 0;
 }
