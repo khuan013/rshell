@@ -14,16 +14,26 @@
 #include <time.h>
 
 using namespace std;
+int fs_digits = 0;
 
 #define FLAG_a 1
 #define FLAG_l 2
 #define FLAG_R 4
 
-int fs_digits = 0;
-
+#define RESET "\033[0m"
+#define RED     "\033[31m"      /* Red */
+#define GREEN   "\033[32m"      /* Green */
+#define BLUE    "\033[34m"      /* Blue */
+#define CYAN    "\033[36m"      /* Cyan */
+#define BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
+#define BOLDBLUE    "\033[1m\033[34m"      /* Bold Blue */
+#define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
+#define GRAYBACK    "\033[100m"     /* Grey Background */
 
 void displayfile(string filename, struct stat* sb, int l_flag) {
-    
+   
+    cout << RESET;
+
     if (l_flag != 0) {
 
         struct passwd *pwd;
@@ -99,16 +109,38 @@ void displayfile(string filename, struct stat* sb, int l_flag) {
         struct tm * lt = localtime(&t);
         char date[80];
         strftime(date, sizeof(date), "%h %d %R ", lt);
-        cout << " " << date << filename;
+        cout << " " << date << " ";
+        
+        // Output file name
+        if (filename[0] == '.')
+            cout << GRAYBACK;
 
+        if (S_ISDIR(sb->st_mode))
+            cout << BOLDBLUE;
+        else if (S_ISLNK(sb->st_mode))
+            cout << CYAN;
+        else if (sb->st_mode & S_IXUSR)
+            cout << BOLDGREEN;
+        
 
+        cout << filename << RESET << endl;
+        
 
     }
     else {
-        cout << filename << " ";
+        if (filename[0] == '.')
+            cout << GRAYBACK;
+
+        if (S_ISDIR(sb->st_mode))
+            cout << BOLDBLUE;
+        else if (S_ISLNK(sb->st_mode))
+            cout << CYAN;
+        else if (sb->st_mode & S_IXUSR)
+            cout <<  BOLDGREEN;
+        
+        cout << filename << RESET <<  "  ";
     }
 
-    cout << endl;
     return;
 }
 
@@ -178,6 +210,9 @@ int main(int argc, char ** argv) {
 
     }
 
+    if ((flags & FLAG_l) == 0){
+        cout << endl;
+    }
 
 
 
