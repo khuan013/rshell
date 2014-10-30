@@ -116,7 +116,7 @@ int main() {
     // Get username
     char * usrname = getlogin();
     if (usrname == NULL){
-	perror ("Error getting user name");
+	perror ("getlogin");
 	exit(1);
     }
 
@@ -124,7 +124,7 @@ int main() {
     char hostname[20];
 
     if (gethostname(hostname, sizeof hostname) ==-1) {
-	perror("Error getting hostname");
+	perror("gethostname");
 	exit(1);
     }
 
@@ -156,6 +156,8 @@ int main() {
 
 
 	int pid=fork();
+    if (pid == -1)
+        perror ("fork");
 	int pid2;
 	if (pid == 0) {
 	    
@@ -169,18 +171,19 @@ loop:
 	    end = input.size();
 	    for (i = start; i < input.size(); i++) {
 
-		
+
+
 		if (input[i] == ";" || input[i] == "&&" || input[i] == "||") {
 		    string connector = input[i];
 
 		    pid2 = fork();
 		    if (pid2 == -1) {
-			perror("There was an error with fork(). ");
+			perror("fork");
 			exit(1);
 		    }
 		    if (pid2!=0) {
 			if (-1 == wait(&status))
-			    perror("There was an error with wait().");
+			    perror("wait");
 			
 			if (connector == "&&" && status != 0)
 			    exit(1);
@@ -205,7 +208,7 @@ loop:
 	else { 
 	    status = wait(NULL);
 	    if (status == -1)
-		perror("There was an error with wait().");
+		perror("wait");
 	}
     }
     
