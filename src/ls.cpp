@@ -165,8 +165,9 @@ void display_folder(string path, const int flags) {
     unsigned int total_blocks = 0;
 
     struct winsize w;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-
+    status = ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    if (status == -1)
+        perror("ioctl");
 
 
     // In recursive call reset column of digits to 0
@@ -232,7 +233,7 @@ void display_folder(string path, const int flags) {
         
 
     int count =0;
-    for (int i = 0; i<filename.size(); i++) {
+    for (unsigned int i = 0; i<filename.size(); i++) {
         string temp = path + "/" + filename[i];
         status = stat(temp.c_str(), &statbuf);
         if (status == -1) 
@@ -259,9 +260,16 @@ void display_folder(string path, const int flags) {
     if ((flags & FLAG_l) == 0){
         cout << endl;
     }
-    closedir(dp);
-    dp = opendir(path.c_str());
- 
+
+    status = closedir(dp);
+    if (status == -1)
+        perror("closedir");
+
+   if ((dp = opendir(path.c_str())) == NULL) {
+        perror("opendir");
+        return;
+    }
+
     if ((flags & FLAG_R) != 0) {
 
         while ((dt = readdir(dp))) if (strncmp(dt->d_name, ".", 1))  {
@@ -272,7 +280,9 @@ void display_folder(string path, const int flags) {
             }
         }
     }
-    closedir(dp);
+    status = closedir(dp);
+    if (status == -1)
+        perror("closedir");
 
 
 
@@ -281,7 +291,6 @@ void display_folder(string path, const int flags) {
 int main(int argc, char ** argv) {
 
     int flags = 0;
-    int status = 0;
 
     vector<string> folders;
 
@@ -310,7 +319,7 @@ int main(int argc, char ** argv) {
         display_folder(folders[0], flags);
     else {
         flags |= FLAG_ARGS;
-        for (int i = 0; i < folders.size(); i++) {
+        for (unsigned int i = 0; i < folders.size(); i++) {
             
             display_folder(folders[i], flags);
             cout << endl;
