@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
+#include <string.h>
 #include <algorithm>
 #include <pwd.h>
 #include <grp.h>
@@ -144,44 +145,34 @@ void displayfile(string filename, struct stat* sb, int l_flag) {
     return;
 }
 
-int main(int argc, char ** argv) {
+void display_folder(string path, const int flags) {
 
-    int flags = 0;
     int status = 0;
-
-    vector<string> filename;
-
-    // Check for ls arguments
-    for (int i =1; i<argc; i++) {
-        if (argv[i][0]=='-') {
-            for (int j=1; argv[i][j]!=0; j++) {
-                if (argv[i][j] == 'a')
-                    flags  |= FLAG_a;
-                else if (argv[i][j] == 'l')
-                    flags |= FLAG_l;
-                else if (argv[i][j] == 'R')
-                    flags |= FLAG_R;
-            }
-        }
-    }
-
     DIR * dp;
     struct dirent *dt;
 
     struct stat statbuf;
     int largest_fsize;
 
+    vector<string> filename;
+
     // Open directory stream
-    if ((dp = opendir(".")) == NULL) {
+    if ((dp = opendir(path.c_str())) == NULL) {
         perror("opendir");
-        return 0;
+        return;
     }
+
+    if ((flags & FLAG_R) != 0)
+        cout << path << ":\n";
 
     while ((dt = readdir(dp)) != NULL) { 
         filename.push_back(dt->d_name);
-        status = stat(dt->d_name, &statbuf);
-        if (status == -1)
-            perror ("stat");
+        string temp = path + "/" + dt->d_name;
+        status = stat(temp.c_str(), &statbuf);
+        if (status == -1) {
+            perror ("stat"); 
+            cerr << "EROR: " << temp << endl;
+            }
         
         if (statbuf.st_size > largest_fsize)
             largest_fsize = statbuf.st_size;
@@ -198,8 +189,9 @@ int main(int argc, char ** argv) {
     
 
     for (int i = 0; i<filename.size(); i++) {
-        status = stat(filename[i].c_str(), &statbuf);
-        if (status == -1)
+        string temp = path + "/" + filename[i];
+        status = stat(temp.c_str(), &statbuf);
+        if (status == -1) 
             perror("stat");
 
         if (flags & FLAG_a && filename[i][0] == '.')
@@ -213,7 +205,46 @@ int main(int argc, char ** argv) {
     if ((flags & FLAG_l) == 0){
         cout << endl;
     }
+    closedir(dp);
+    dp = opendir(path.c_str());
+ 
+    if ((flags & FLAG_R) != 0) {
 
+        while ((dt = readdir(dp))) if (strncmp(dt->d_name, ".", 1))  {
+            if (dt->d_type == 4) {
+                string filePath = path + "/" + dt->d_name;
+                cout << endl;
+                display_folder(filePath, flags);
+            }
+        }
+    }
+    closedir(dp);
+
+
+
+}
+
+int main(int argc, char ** argv) {
+
+    int flags = 0;
+    int status = 0;
+
+
+    // Check for ls arguments
+    for (int i =1; i<argc; i++) {
+        if (argv[i][0]=='-') {
+            for (int j=1; argv[i][j]!=0; j++) {
+                if (argv[i][j] == 'a')
+                    flags  |= FLAG_a;
+                else if (argv[i][j] == 'l')
+                    flags |= FLAG_l;
+                else if (argv[i][j] == 'R')
+                    flags |= FLAG_R;
+            }
+        }
+    }
+
+    display_folder((char *)".", flags); 
 
 
 
