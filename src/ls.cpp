@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
 #include <unistd.h>
 #include <dirent.h>
 #include <errno.h>
@@ -20,6 +21,7 @@ int fs_digits = 0;
 #define FLAG_a 1
 #define FLAG_l 2
 #define FLAG_R 4
+#define FLAG_ARGS 8
 
 #define RESET "\033[0m"
 #define RED     "\033[31m"      /* Red */
@@ -31,7 +33,9 @@ int fs_digits = 0;
 #define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
 #define GRAYBACK    "\033[100m"     /* Grey Background */
 
-void displayfile(string filename, struct stat* sb, int l_flag) {
+
+
+void displayfile(string filename, struct stat* sb, int l_flag, int largest_name) {
    
     cout << RESET;
 
@@ -138,8 +142,11 @@ void displayfile(string filename, struct stat* sb, int l_flag) {
             cout << CYAN;
         else if (sb->st_mode & S_IXUSR)
             cout <<  BOLDGREEN;
-        
-        cout << filename << RESET <<  "  ";
+        if (largest_name != 0)
+            cout << setw(largest_name + 2) << left << filename << RESET ;
+
+        else 
+            cout << filename << "  " << RESET;
     }
 
     return;
@@ -153,8 +160,14 @@ void display_folder(string path, const int flags) {
 
     struct stat statbuf;
     int largest_fsize;
+    int largest_name = 0;
 
     unsigned int total_blocks = 0;
+
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+
+
 
     // In recursive call reset column of digits to 0
     fs_digits = 0;
@@ -167,7 +180,7 @@ void display_folder(string path, const int flags) {
         return;
     }
 
-    if ((flags & FLAG_R) != 0)
+    if ((flags & FLAG_R) != 0 || (flags & FLAG_ARGS) != 0)
         cout << path << ":\n";
 
     while ((dt = readdir(dp)) != NULL) { 
@@ -178,6 +191,13 @@ void display_folder(string path, const int flags) {
             perror ("stat"); 
             cerr << "EROR: " << temp << endl;
             }
+       
+        int i;
+        for (i= 0; dt->d_name[i] != '\0'; i++);
+            ;
+
+        if (i > largest_name) 
+            largest_name = i;
         
         if (statbuf.st_size > largest_fsize)
             largest_fsize = statbuf.st_size;
@@ -190,6 +210,9 @@ void display_folder(string path, const int flags) {
         
 
     }
+
+
+    int num_columns = w.ws_col / (largest_name+2);
 
     // Keep track of how large the file size column must be
     do {
@@ -204,17 +227,32 @@ void display_folder(string path, const int flags) {
     if ((flags & FLAG_l))
         cout << "total " << total_blocks / 2 << endl;
 
+    if (((largest_name) * (filename.size())-2) < w.ws_col)
+        largest_name = 0;
+        
+
+    int count =0;
     for (int i = 0; i<filename.size(); i++) {
         string temp = path + "/" + filename[i];
         status = stat(temp.c_str(), &statbuf);
         if (status == -1) 
             perror("stat");
+        
+        if ((flags & FLAG_a) && filename[i][0] == '.') {
+            displayfile(filename[i], &statbuf, flags & FLAG_l, largest_name);
+            count++;
+            }
 
-        if ((flags & FLAG_a) && filename[i][0] == '.')
-            displayfile(filename[i], &statbuf, flags & FLAG_l);
+        else if (filename[i][0] != '.') {
+            displayfile(filename[i], &statbuf, flags & FLAG_l, largest_name);
+            count++;
+            }
+        
+        if (count == num_columns) {
+            count = 0;
+            cout << endl;
+            }
 
-        else if (filename[i][0] != '.')
-            displayfile(filename[i], &statbuf, flags & FLAG_l);
 
     }
 
@@ -245,6 +283,8 @@ int main(int argc, char ** argv) {
     int flags = 0;
     int status = 0;
 
+    vector<string> folders;
+
 
     // Check for ls arguments
     for (int i =1; i<argc; i++) {
@@ -258,9 +298,24 @@ int main(int argc, char ** argv) {
                     flags |= FLAG_R;
             }
         }
+        else
+            folders.push_back(argv[i]);
     }
 
-    display_folder((char *)".", flags); 
+    
+    if (folders.size() == 0)
+        display_folder(".", flags);
+
+    else if (folders.size() == 1)
+        display_folder(folders[0], flags);
+    else {
+        flags |= FLAG_ARGS;
+        for (int i = 0; i < folders.size(); i++) {
+            
+            display_folder(folders[i], flags);
+            cout << endl;
+        }
+    }
 
 
 
