@@ -28,7 +28,7 @@ Overview
 ------------
 
 rshell
-------
+----
 
 This program was created to be a simple command shell.
 It can take in multiple commands using the connectors, `&&` `||` and `;`.
@@ -44,21 +44,23 @@ did not succeed, no further commands will be executed. If a command before an
 Also displays the user and hostname of the machine the user is logged into.
 
 ls
------
+---
 
 This program will output the contents of a directory. If no directory
 is passed as an argument, it will output the `.` directory.
 ls accepts 3 flags
-1. -a \nWill show hidden files.
-2. -l \nOutputs the log of each file, including permissions, last modified and file size.
-3. -R \nWill output the contents of folders within the current one recursively.
+
+1. -a Will show hidden files.
+2. -l Outputs the log of each file, including permissions, last modified and file size.
+3. -R Will output the contents of folders within the current one recursively.
 
 cp
------
+---
 
 This program will copy the contents of a text file into a created file.
 
 It does this in 3 ways.
+
 1. get and put functions to copy one character at a time
 2. read() and write() functions to copy one character at a time
 3. read() and write() to copy one buffer at a time.
