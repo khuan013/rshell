@@ -48,6 +48,7 @@ ls
 
 This program will output the contents of a directory. If no directory
 is passed as an argument, it will output the `.` directory.
+
 ls accepts 3 flags
 
 1. -a Will show hidden files.
@@ -66,6 +67,7 @@ It does this in 3 ways.
 3. read() and write() to copy one buffer at a time.
 
 This program takes up to 3 arguments.
+
 1. Name of text file
 2. Name of copied file to be created
 3. "-a" flag (optional)
