@@ -154,6 +154,11 @@ void display_folder(string path, const int flags) {
     struct stat statbuf;
     int largest_fsize;
 
+    unsigned int total_blocks = 0;
+
+    // In recursive call reset column of digits to 0
+    fs_digits = 0;
+
     vector<string> filename;
 
     // Open directory stream
@@ -177,6 +182,13 @@ void display_folder(string path, const int flags) {
         if (statbuf.st_size > largest_fsize)
             largest_fsize = statbuf.st_size;
 
+        // Add blocksize of each file to total sum
+        if ((flags & FLAG_a) == 0 && dt->d_name[0] == '.') ;
+        else 
+            total_blocks += statbuf.st_blocks;
+        
+        
+
     }
 
     // Keep track of how large the file size column must be
@@ -187,6 +199,10 @@ void display_folder(string path, const int flags) {
 
     sort(filename.begin(), filename.end());
     
+    // output the number of 1024 blocks by dividing the number of
+    // 512 blocks in 2
+    if ((flags & FLAG_l))
+        cout << "total " << total_blocks / 2 << endl;
 
     for (int i = 0; i<filename.size(); i++) {
         string temp = path + "/" + filename[i];
@@ -194,7 +210,7 @@ void display_folder(string path, const int flags) {
         if (status == -1) 
             perror("stat");
 
-        if (flags & FLAG_a && filename[i][0] == '.')
+        if ((flags & FLAG_a) && filename[i][0] == '.')
             displayfile(filename[i], &statbuf, flags & FLAG_l);
 
         else if (filename[i][0] != '.')
