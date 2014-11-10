@@ -49,13 +49,9 @@ ls
 This program will output the contents of a directory. If no directory
 is passed as an argument, it will output the `.` directory.
 ls accepts 3 flags
-1. -a
-    Will show hidden files.
-2. -l
-    Outputs the log of each file, including permissions, last
-    modified and file size.
-3. -R
-    Will output the contents of folders within the current one recursively.
+1. -a \nWill show hidden files.
+2. -l \nOutputs the log of each file, including permissions, last modified and file size.
+3. -R \nWill output the contents of folders within the current one recursively.
 
 cp
 -----
