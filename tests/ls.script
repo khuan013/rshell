@@ -1,0 +1,353 @@
+Script started on Tue 11 Nov 2014 11:39:21 AM PST
+~
+khuan013@hammer $ #This is the testing script for hw1 ls
+~
+khuan013@hammer $ $[K#Kenneth Huang
+~
+khuan013@hammer $ cd rshell
+~/rshell
+khuan013@hammer $ make clean
+rm -rf bin
+~/rshell
+khuan013@hammer $ make all
+mkdir -p bin
+cd src && g++ -Wall -Werror -ansi -pedantic -o rshell rshell.cpp &&\
+	mv rshell ../bin
+mkdir -p bin
+cd src && g++ -Wall -Werror -ansi -pedantic -o ls ls.cpp &&\
+	mv ls ../bin
+mkdir -p bin
+cd src && g++ -Wall -Werror -ansi -pedantic -o cp cp.cpp && \
+		mv cp ../bin
+~/rshell
+khuan013@hammer $ ls
+[0m[01;34mbin[0m/  LICENSE  Makefile  README.md  [01;34msrc[0m/  [01;34mtests[0m/
+[m~/rshell
+khuan013@hammer $ #Testing ls
+~/rshell
+khuan013@hammer $ bin/ls
+[0mLICENSE  [0m[0mMakefile  [0m[0mREADME.md  [0m[0m[1m[34mbin  [0m[0m[1m[34msrc  [0m[0m[1m[34mtests  [0m
+~/rshell
+khuan013@hammer $ #Testing ls -l
+~/rshell
+khuan013@hammer $ bin/ls -l
+total 24
+[0m-rw------- 1 khuan013 csmajs  1076 Nov 11 11:25  LICENSE[0m
+[0m-rw------- 1 khuan013 csmajs   341 Nov 11 11:25  Makefile[0m
+[0m-rw------- 1 khuan013 csmajs  2280 Nov 11 11:25  README.md[0m
+[0mdrwx------ 2 khuan013 csmajs  4096 Nov 11 11:38  [1m[34mbin[0m
+[0mdrwx------ 2 khuan013 csmajs  4096 Nov 11 11:38  [1m[34msrc[0m
+[0mdrwx------ 2 khuan013 csmajs  4096 Nov 11 11:38  [1m[34mtests[0m
+~/rshell
+khuan013@hammer $ #Comparing to regular ls output
+~/rshell
+khuan013@hammer $ ls -l
+total 24
+drwx------ 2 khuan013 csmajs 4096 Nov 11 11:38 [0m[01;34mbin[0m/
+-rw------- 1 khuan013 csmajs 1076 Nov 11 11:25 LICENSE
+-rw------- 1 khuan013 csmajs  341 Nov 11 11:25 Makefile
+-rw------- 1 khuan013 csmajs 2280 Nov 11 11:25 README.md
+drwx------ 2 khuan013 csmajs 4096 Nov 11 11:38 [01;34msrc[0m/
+drwx------ 2 khuan013 csmajs 4096 Nov 11 11:38 [01;34mtests[0m/
+[m~/rshell
+khuan013@hammer $ #Testing ls -a
+~/rshell
+khuan013@hammer $ bin/ls -a
+[0m[100m[1m[34m.  [0m[0m[100m[1m[34m..  [0m[0m[100m[1m[34m.git  [0m[0mLICENSE  [0m[0mMakefile  [0m[0mREADME.md  [0m[0m[1m[34mbin  [0m[0m[1m[34msrc  [0m[0m[1m[34mtests  [0m
+
+~/rshell
+khuan013@hammer $ #comparing to regular ls
+~/rshell
+khuan013@hammer $ ls -a
+[0m[01;34m.[0m/  [01;34m..[0m/  [01;34mbin[0m/  [01;34m.git[0m/  LICENSE  Makefile  README.md  [01;34msrc[0m/  [01;34mtests[0m/
+[m~/rshell
+khuan013@hammer $ #Testing ls -R
+~/rshell
+khuan013@hammer $ bin/ls -R
+.:
+[0mLICENSE  [0m[0mMakefile  [0m[0mREADME.md  [0m[0m[1m[34mbin  [0m[0m[1m[34msrc  [0m[0m[1m[34mtests  [0m
+
+./src:
+[0mcp.cpp  [0m[0mls.cpp  [0m[0mrshell.cpp  [0m
+
+./tests:
+[0mexec.script  [0m[0mls.script  [0m
+
+./bin:
+[0m[1m[32mcp  [0m[0m[1m[32mls  [0m[0m[1m[32mrshell  [0m
+~/rshell
+khuan013@hammer $ #comapari[K[K[K[K[Kparing to normal ls
+~/rshell
+khuan013@hammer $ ls -=R[K[KR
+.:
+[0m[01;34mbin[0m/  LICENSE  Makefile  README.md  [01;34msrc[0m/  [01;34mtests[0m/
+
+./bin:
+[01;32mcp[0m*  [01;32mls[0m*  [01;32mrshell[0m*
+
+./src:
+cp.cpp  ls.cpp  rshell.cpp
+
+./tests:
+exec.script  ls.script
+[m~/rshell
+khuan013@hammer $ #Testing combination of flags
+~/rshell
+khuan013@hammer $ bin/ls -la
+total 36
+[0mdrwx------ 6 khuan013 csmajs  4096 Nov 11 11:38  [100m[1m[34m.[0m
+[0mdrwx------ 33 khuan013 csmajs  4096 Nov 11 11:37  [100m[1m[34m..[0m
+[0mdrwx------ 8 khuan013 csmajs  4096 Nov 11 11:25  [100m[1m[34m.git[0m
+[0m-rw------- 1 khuan013 csmajs  1076 Nov 11 11:25  LICENSE[0m
+[0m-rw------- 1 khuan013 csmajs   341 Nov 11 11:25  Makefile[0m
+[0m-rw------- 1 khuan013 csmajs  2280 Nov 11 11:25  README.md[0m
+[0mdrwx------ 2 khuan013 csmajs  4096 Nov 11 11:38  [1m[34mbin[0m
+[0mdrwx------ 2 khuan013 csmajs  4096 Nov 11 11:38  [1m[34msrc[0m
+[0mdrwx------ 2 khuan013 csmajs  4096 Nov 11 11:38  [1m[34mtests[0m
+
+~/rshell
+khuan013@hammer $ bin/ls -lR
+.:
+total 24
+[0m-rw------- 1 khuan013 csmajs  1076 Nov 11 11:25  LICENSE[0m
+[0m-rw------- 1 khuan013 csmajs   341 Nov 11 11:25  Makefile[0m
+[0m-rw------- 1 khuan013 csmajs  2280 Nov 11 11:25  README.md[0m
+[0mdrwx------ 2 khuan013 csmajs  4096 Nov 11 11:38  [1m[34mbin[0m
+[0mdrwx------ 2 khuan013 csmajs  4096 Nov 11 11:38  [1m[34msrc[0m
+[0mdrwx------ 2 khuan013 csmajs  4096 Nov 11 11:38  [1m[34mtests[0m
+
+./src:
+total 16
+[0m-rw------- 1 khuan013 csmajs 3265 Nov 11 11:25  cp.cpp[0m
+[0m-rw------- 1 khuan013 csmajs 7828 Nov 11 11:25  ls.cpp[0m
+[0m-rw------- 1 khuan013 csmajs 3875 Nov 11 11:25  rshell.cpp[0m
+
+./tests:
+total 8
+[0m-rw------- 1 khuan013 csmajs 8068 Nov 11 11:25  exec.script[0m
+[0m-rw------- 1 khuan013 csmajs    0 Nov 11 11:38  ls.script[0m
+
+./bin:
+total 84
+[0m-rwx------ 1 khuan013 csmajs 15239 Nov 11 11:38  [1m[32mcp[0m
+[0m-rwx------ 1 khuan013 csmajs 40370 Nov 11 11:38  [1m[32mls[0m
+[0m-rwx------ 1 khuan013 csmajs 25981 Nov 11 11:38  [1m[32mrshell[0m
+~/rshell
+khuan013@hammer $ bin [K/.[Kls -Ra
+.:
+[0m[100m[1m[34m.  [0m[0m[100m[1m[34m..  [0m[0m[100m[1m[34m.git  [0m[0mLICENSE  [0m[0mMakefile  [0m[0mREADME.md  [0m[0m[1m[34mbin  [0m[0m[1m[34msrc  [0m[0m[1m[34mtests  [0m
+
+
+./src:
+[0m[100m[1m[34m.  [0m[0m[100m[1m[34m..  [0m[0mcp.cpp  [0m[0mls.cpp  [0m[0mrshell.cpp  [0m
+
+./tests:
+[0m[100m[1m[34m.  [0m[0m[100m[1m[34m..  [0m[0mexec.script  [0m[0mls.script  [0m
+
+./bin:
+[0m[100m[1m[34m.  [0m[0m[100m[1m[34m..  [0m[0m[1m[32mcp  [0m[0m[1m[32mls  [0m[0m[1m[32mrshell  [0m
+~/rshell
+khuan013@hammer $ #Testing ls when passing in fo[K[Kdirectory names as args
+~/rshell
+khuan013@hammer $ bin/ls ..
+[0m[1m[34mDesktop              [0m[0m[1m[34mbin                  [0m[0m[1m[34mcs014                [0m[0m[1m[34mcs100                [0m
+[0m[1m[34mrshell               [0m[0m[1m[34mucr-cs100            [0m
+~/rshell
+khuan013@hammer $ bin/ls src[K[K[Kbin
+[0m[1m[32mcp  [0m[0m[1m[32mls  [0m[0m[1m[32mrshell  [0m
+~/rshell
+khuan013@hammer $ bin/ls src -l
+total 16
+[0m-rw------- 1 khuan013 csmajs 3265 Nov 11 11:25  cp.cpp[0m
+[0m-rw------- 1 khuan013 csmajs 7828 Nov 11 11:25  ls.cpp[0m
+[0m-rw------- 1 khuan013 csmajs 3875 Nov 11 11:25  rshell.cpp[0m
+~/rshell
+khuan013@hammer $ bin/ls tests src ..
+tests:
+[0mexec.script  [0m[0mls.script  [0m
+
+src:
+[0mcp.cpp  [0m[0mls.cpp  [0m[0mrshell.cpp  [0m
+
+..:
+[0m[1m[34mDesktop              [0m[0m[1m[34mbin                  [0m[0m[1m[34mcs014                [0m[0m[1m[34mcs100                [0m
+[0m[1m[34mrshell               [0m[0m[1m[34mucr-cs100            [0m
+
+~/rshell
+khuan013@hammer $ #testing ls on directory with many files
+~/rshell
+khuan013@hammer $ cd ucr-cs100/people/std[Kudents
+bash: cd: ucr-cs100/people/students: No such file or directory
+~/rshell
+khuan013@hammer $ cd ~/ucr-cs100/[pe[K[K[K[[Kpeople/.s[K[Kstudents
+~/ucr-cs100/people/students
+khuan013@hammer $ ls
+aaven004  aorti017  bleon001  emull005  hlao002   jholl013  khigu001  mxu008    rdinh002  tliu020
+abarb014  asand017  ccoll010  fvera002  hray001   jmaw001   khuan013  nkesa001  rheng001  vdoan002
+achao008  atan009   cmanj001  gliu016   htsai010  jmoon018  kkamg001  nlapr001  rluk001   yli082
+afan004   atost001  dgoer001  gruiz007  ifuka001  jreye028  kle016    nsark002  rtran012  zeman001
+ahsu013   atran046  dngo010   hchu007   ihund001  jstod001  llope039  ogonz007  sjin010
+amacp001  bbenn003  dpham008  hfanc001  jbarb011  karai001  lpeng003  palva002  teloy001
+amyll001  bchen022  drami025  hgarc014  jfan013   kchan039  lxu003    pstar001  tglen002
+~/ucr-cs100/people/students
+khuan013@hammer $ ../../../rshell/bin/ls
+[0maaven004  [0m[0mabarb014  [0m[0machao008  [0m[0mafan004   [0m[0mahsu013   [0m[0mamacp001  [0m[0mamyll001  [0m[0maorti017  [0m[0masand017  [0m[0matan009   [0m
+[0matost001  [0m[0matran046  [0m[0mbbenn003  [0m[0mbchen022  [0m[0mbleon001  [0m[0mccoll010  [0m[0mcmanj001  [0m[0mdgoer001  [0m[0mdngo010   [0m[0mdpham008  [0m
+[0mdrami025  [0m[0memull005  [0m[0mfvera002  [0m[0mgliu016   [0m[0mgruiz007  [0m[0mhchu007   [0m[0mhfanc001  [0m[0mhgarc014  [0m[0mhlao002   [0m[0mhray001   [0m
+[0mhtsai010  [0m[0mifuka001  [0m[0mihund001  [0m[0mjbarb011  [0m[0mjfan013   [0m[0mjholl013  [0m[0mjmaw001   [0m[0mjmoon018  [0m[0mjreye028  [0m[0mjstod001  [0m
+[0mkarai001  [0m[0mkchan039  [0m[0mkhigu001  [0m[0mkhuan013  [0m[0mkkamg001  [0m[0mkle016    [0m[0mllope039  [0m[0mlpeng003  [0m[0mlxu003    [0m[0mmxu008    [0m
+[0mnkesa001  [0m[0mnlapr001  [0m[0mnsark002  [0m[0mogonz007  [0m[0mpalva002  [0m[0mpstar001  [0m[0mrdinh002  [0m[0mrheng001  [0m[0mrluk001   [0m[0mrtran012  [0m
+[0msjin010   [0m[0mteloy001  [0m[0mtglen002  [0m[0mtliu020   [0m[0mvdoan002  [0m[0myli082    [0m[0mzeman001  [0m
+~/ucr-cs100/people/students
+khuan013@hammer $ ../../../rshell/bin/ls -l
+total 268
+[0m-rw------- 1 khuan013 csmajs   193 Oct 27 17:35  aaven004[0m
+[0m-rw------- 1 khuan013 csmajs   173 Oct 27 17:35  abarb014[0m
+[0m-rw------- 1 khuan013 csmajs   189 Oct 27 17:35  achao008[0m
+[0m-rw------- 1 khuan013 csmajs   165 Oct 27 17:35  afan004[0m
+[0m-rw------- 1 khuan013 csmajs   177 Oct 27 17:35  ahsu013[0m
+[0m-rw------- 1 khuan013 csmajs   180 Oct 27 17:35  amacp001[0m
+[0m-rw------- 1 khuan013 csmajs   184 Oct 27 17:35  amyll001[0m
+[0m-rw------- 1 khuan013 csmajs   194 Oct 27 17:35  aorti017[0m
+[0m-rw------- 1 khuan013 csmajs   180 Oct 27 17:35  asand017[0m
+[0m-rw------- 1 khuan013 csmajs   164 Oct 27 17:35  atan009[0m
+
+[0m-rw------- 1 khuan013 csmajs   173 Oct 27 17:35  atost001[0m
+[0m-rw------- 1 khuan013 csmajs   181 Oct 27 17:35  atran046[0m
+[0m-rw------- 1 khuan013 csmajs   203 Oct 27 17:35  bbenn003[0m
+[0m-rw------- 1 khuan013 csmajs   187 Oct 27 17:35  bchen022[0m
+[0m-rw------- 1 khuan013 csmajs   180 Oct 27 17:35  bleon001[0m
+[0m-rw------- 1 khuan013 csmajs   156 Oct 27 17:35  ccoll010[0m
+[0m-rw------- 1 khuan013 csmajs   192 Oct 27 17:35  cmanj001[0m
+[0m-rw------- 1 khuan013 csmajs   204 Oct 27 17:35  dgoer001[0m
+[0m-rw------- 1 khuan013 csmajs   175 Oct 27 17:35  dngo010[0m
+[0m-rw------- 1 khuan013 csmajs   197 Oct 27 17:35  dpham008[0m
+
+[0m-rw------- 1 khuan013 csmajs   224 Oct 27 17:35  drami025[0m
+[0m-rw------- 1 khuan013 csmajs   201 Oct 27 17:35  emull005[0m
+[0m-rw------- 1 khuan013 csmajs   183 Oct 27 17:35  fvera002[0m
+[0m-rw------- 1 khuan013 csmajs   167 Oct 27 17:35  gliu016[0m
+[0m-rw------- 1 khuan013 csmajs   185 Oct 27 17:35  gruiz007[0m
+[0m-rw------- 1 khuan013 csmajs   170 Oct 27 17:35  hchu007[0m
+[0m-rw------- 1 khuan013 csmajs   175 Oct 27 17:35  hfanc001[0m
+[0m-rw------- 1 khuan013 csmajs   182 Oct 27 17:35  hgarc014[0m
+[0m-rw------- 1 khuan013 csmajs   176 Oct 27 17:35  hlao002[0m
+[0m-rw------- 1 khuan013 csmajs   187 Oct 27 17:35  hray001[0m
+
+[0m-rw------- 1 khuan013 csmajs   177 Oct 27 17:35  htsai010[0m
+[0m-rw------- 1 khuan013 csmajs   172 Oct 27 17:35  ifuka001[0m
+[0m-rw------- 1 khuan013 csmajs   183 Oct 27 17:35  ihund001[0m
+[0m-rw------- 1 khuan013 csmajs   183 Oct 27 17:35  jbarb011[0m
+[0m-rw------- 1 khuan013 csmajs   175 Oct 27 17:35  jfan013[0m
+[0m-rw------- 1 khuan013 csmajs   187 Oct 27 17:35  jholl013[0m
+[0m-rw------- 1 khuan013 csmajs   184 Oct 27 17:35  jmaw001[0m
+[0m-rw------- 1 khuan013 csmajs   171 Oct 27 17:35  jmoon018[0m
+[0m-rw------- 1 khuan013 csmajs   191 Oct 27 17:35  jreye028[0m
+[0m-rw------- 1 khuan013 csmajs   184 Oct 27 17:35  jstod001[0m
+
+[0m-rw------- 1 khuan013 csmajs   187 Oct 27 17:35  karai001[0m
+[0m-rw------- 1 khuan013 csmajs   215 Oct 27 17:35  kchan039[0m
+[0m-rw------- 1 khuan013 csmajs   183 Oct 27 17:35  khigu001[0m
+[0m-rw------- 1 khuan013 csmajs   180 Oct 27 17:35  khuan013[0m
+[0m-rw------- 1 khuan013 csmajs   137 Oct 27 17:35  kkamg001[0m
+[0m-rw------- 1 khuan013 csmajs   159 Oct 27 17:35  kle016[0m
+[0m-rw------- 1 khuan013 csmajs   195 Oct 27 17:35  llope039[0m
+[0m-rw------- 1 khuan013 csmajs   172 Oct 27 17:35  lpeng003[0m
+[0m-rw------- 1 khuan013 csmajs   160 Oct 27 17:35  lxu003[0m
+[0m-rw------- 1 khuan013 csmajs   161 Oct 27 17:35  mxu008[0m
+
+[0m-rw------- 1 khuan013 csmajs   188 Oct 27 17:35  nkesa001[0m
+[0m-rw------- 1 khuan013 csmajs   162 Oct 27 17:35  nlapr001[0m
+[0m-rw------- 1 khuan013 csmajs   185 Oct 27 17:35  nsark002[0m
+[0m-rw------- 1 khuan013 csmajs   177 Oct 27 17:35  ogonz007[0m
+[0m-rw------- 1 khuan013 csmajs   160 Oct 27 17:35  palva002[0m
+[0m-rw------- 1 khuan013 csmajs   185 Oct 27 17:35  pstar001[0m
+[0m-rw------- 1 khuan013 csmajs   185 Oct 27 17:35  rdinh002[0m
+[0m-rw------- 1 khuan013 csmajs   190 Oct 27 17:35  rheng001[0m
+[0m-rw------- 1 khuan013 csmajs   167 Oct 27 17:35  rluk001[0m
+[0m-rw------- 1 khuan013 csmajs   170 Oct 27 17:35  rtran012[0m
+
+[0m-rw------- 1 khuan013 csmajs   186 Oct 27 17:35  sjin010[0m
+[0m-rw------- 1 khuan013 csmajs   189 Oct 27 17:35  teloy001[0m
+[0m-rw------- 1 khuan013 csmajs   180 Oct 27 17:35  tglen002[0m
+[0m-rw------- 1 khuan013 csmajs   166 Oct 27 17:35  tliu020[0m
+[0m-rw------- 1 khuan013 csmajs   172 Oct 27 17:35  vdoan002[0m
+[0m-rw------- 1 khuan013 csmajs   177 Oct 27 17:35  yli082[0m
+[0m-rw------- 1 khuan013 csmajs   311 Oct 27 17:35  zeman001[0m
+~/ucr-cs100/people/students
+khuan013@hammer $ ls -l
+total 268
+-rw------- 1 khuan013 csmajs 193 Oct 27 17:35 aaven004
+-rw------- 1 khuan013 csmajs 173 Oct 27 17:35 abarb014
+-rw------- 1 khuan013 csmajs 189 Oct 27 17:35 achao008
+-rw------- 1 khuan013 csmajs 165 Oct 27 17:35 afan004
+-rw------- 1 khuan013 csmajs 177 Oct 27 17:35 ahsu013
+-rw------- 1 khuan013 csmajs 180 Oct 27 17:35 amacp001
+-rw------- 1 khuan013 csmajs 184 Oct 27 17:35 amyll001
+-rw------- 1 khuan013 csmajs 194 Oct 27 17:35 aorti017
+-rw------- 1 khuan013 csmajs 180 Oct 27 17:35 asand017
+-rw------- 1 khuan013 csmajs 164 Oct 27 17:35 atan009
+-rw------- 1 khuan013 csmajs 173 Oct 27 17:35 atost001
+-rw------- 1 khuan013 csmajs 181 Oct 27 17:35 atran046
+-rw------- 1 khuan013 csmajs 203 Oct 27 17:35 bbenn003
+-rw------- 1 khuan013 csmajs 187 Oct 27 17:35 bchen022
+-rw------- 1 khuan013 csmajs 180 Oct 27 17:35 bleon001
+-rw------- 1 khuan013 csmajs 156 Oct 27 17:35 ccoll010
+-rw------- 1 khuan013 csmajs 192 Oct 27 17:35 cmanj001
+-rw------- 1 khuan013 csmajs 204 Oct 27 17:35 dgoer001
+-rw------- 1 khuan013 csmajs 175 Oct 27 17:35 dngo010
+-rw------- 1 khuan013 csmajs 197 Oct 27 17:35 dpham008
+-rw------- 1 khuan013 csmajs 224 Oct 27 17:35 drami025
+-rw------- 1 khuan013 csmajs 201 Oct 27 17:35 emull005
+-rw------- 1 khuan013 csmajs 183 Oct 27 17:35 fvera002
+-rw------- 1 khuan013 csmajs 167 Oct 27 17:35 gliu016
+-rw------- 1 khuan013 csmajs 185 Oct 27 17:35 gruiz007
+-rw------- 1 khuan013 csmajs 170 Oct 27 17:35 hchu007
+-rw------- 1 khuan013 csmajs 175 Oct 27 17:35 hfanc001
+-rw------- 1 khuan013 csmajs 182 Oct 27 17:35 hgarc014
+-rw------- 1 khuan013 csmajs 176 Oct 27 17:35 hlao002
+-rw------- 1 khuan013 csmajs 187 Oct 27 17:35 hray001
+-rw------- 1 khuan013 csmajs 177 Oct 27 17:35 htsai010
+-rw------- 1 khuan013 csmajs 172 Oct 27 17:35 ifuka001
+-rw------- 1 khuan013 csmajs 183 Oct 27 17:35 ihund001
+-rw------- 1 khuan013 csmajs 183 Oct 27 17:35 jbarb011
+-rw------- 1 khuan013 csmajs 175 Oct 27 17:35 jfan013
+-rw------- 1 khuan013 csmajs 187 Oct 27 17:35 jholl013
+-rw------- 1 khuan013 csmajs 184 Oct 27 17:35 jmaw001
+-rw------- 1 khuan013 csmajs 171 Oct 27 17:35 jmoon018
+-rw------- 1 khuan013 csmajs 191 Oct 27 17:35 jreye028
+-rw------- 1 khuan013 csmajs 184 Oct 27 17:35 jstod001
+-rw------- 1 khuan013 csmajs 187 Oct 27 17:35 karai001
+-rw------- 1 khuan013 csmajs 215 Oct 27 17:35 kchan039
+-rw------- 1 khuan013 csmajs 183 Oct 27 17:35 khigu001
+-rw------- 1 khuan013 csmajs 180 Oct 27 17:35 khuan013
+-rw------- 1 khuan013 csmajs 137 Oct 27 17:35 kkamg001
+-rw------- 1 khuan013 csmajs 159 Oct 27 17:35 kle016
+-rw------- 1 khuan013 csmajs 195 Oct 27 17:35 llope039
+-rw------- 1 khuan013 csmajs 172 Oct 27 17:35 lpeng003
+-rw------- 1 khuan013 csmajs 160 Oct 27 17:35 lxu003
+-rw------- 1 khuan013 csmajs 161 Oct 27 17:35 mxu008
+-rw------- 1 khuan013 csmajs 188 Oct 27 17:35 nkesa001
+-rw------- 1 khuan013 csmajs 162 Oct 27 17:35 nlapr001
+-rw------- 1 khuan013 csmajs 185 Oct 27 17:35 nsark002
+-rw------- 1 khuan013 csmajs 177 Oct 27 17:35 ogonz007
+-rw------- 1 khuan013 csmajs 160 Oct 27 17:35 palva002
+-rw------- 1 khuan013 csmajs 185 Oct 27 17:35 pstar001
+-rw------- 1 khuan013 csmajs 185 Oct 27 17:35 rdinh002
+-rw------- 1 khuan013 csmajs 190 Oct 27 17:35 rheng001
+-rw------- 1 khuan013 csmajs 167 Oct 27 17:35 rluk001
+-rw------- 1 khuan013 csmajs 170 Oct 27 17:35 rtran012
+-rw------- 1 khuan013 csmajs 186 Oct 27 17:35 sjin010
+-rw------- 1 khuan013 csmajs 189 Oct 27 17:35 teloy001
+-rw------- 1 khuan013 csmajs 180 Oct 27 17:35 tglen002
+-rw------- 1 khuan013 csmajs 166 Oct 27 17:35 tliu020
+-rw------- 1 khuan013 csmajs 172 Oct 27 17:35 vdoan002
+-rw------- 1 khuan013 csmajs 177 Oct 27 17:35 yli082
+-rw------- 1 khuan013 csmajs 311 Oct 27 17:35 zeman001
+~/ucr-cs100/people/students
+khuan013@hammer $ #This concludes the testing for hw1 ls
+~/ucr-cs100/people/students
+khuan013@hammer $ exit
+exit
+
+Script done on Tue 11 Nov 2014 11:45:17 AM PST
