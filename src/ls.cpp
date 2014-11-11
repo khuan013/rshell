@@ -161,6 +161,7 @@ void display_folder(string path, const int flags) {
     struct stat statbuf;
     int largest_fsize;
     int largest_name = 0;
+    unsigned int total_length=0;
 
     unsigned int total_blocks = 0;
 
@@ -197,6 +198,8 @@ void display_folder(string path, const int flags) {
         for (i= 0; dt->d_name[i] != '\0'; i++);
             ;
 
+        total_length += i + 1;
+
         if (i > largest_name) 
             largest_name = i;
         
@@ -228,7 +231,7 @@ void display_folder(string path, const int flags) {
     if ((flags & FLAG_l))
         cout << "total " << total_blocks / 2 << endl;
 
-    if (((largest_name) * (filename.size())-2) < w.ws_col)
+    if (total_length < w.ws_col)
         largest_name = 0;
         
 
@@ -249,7 +252,7 @@ void display_folder(string path, const int flags) {
             count++;
             }
         
-        if (count == num_columns) {
+        if (count == num_columns && largest_name != 0) {
             count = 0;
             cout << endl;
             }

@@ -1,7 +1,7 @@
 RSHELL
 ====
 
-Licensing Information: READ LICENSE
+Licensing Information: MIT 
 ---
 Project source can be downloaded from https://github.com/khuan013/rshell.git
 ---
@@ -28,7 +28,7 @@ Overview
 ------------
 
 rshell
-----
+---
 
 This program was created to be a simple command shell.
 It can take in multiple commands using the connectors, `&&` `||` and `;`.
@@ -47,7 +47,7 @@ ls
 ---
 
 This program will output the contents of a directory. If no directory
-is passed as an argument, it will output the `.` directory.
+is passed as an argument, it will output the `.` directory. Also displays different colors for different types of files.
 
 ls accepts 3 flags
 
@@ -66,7 +66,7 @@ It does this in 3 ways.
 2. read() and write() functions to copy one character at a time
 3. read() and write() to copy one buffer at a time.
 
-This program takes up to 3 arguments.
+This program takes up to 3 arguments in this order.
 
 1. Name of text file
 2. Name of copied file to be created
@@ -86,7 +86,8 @@ the getlogin() function causes an error.
 
 ls
 ---
-* Output is not formatted the same way. Not sorted case insensitive.
+* Output is not formatted the same way. 
+* Not sorted case insensitive.
 
 cp
 ---
