@@ -8,7 +8,7 @@
 #include <errno.h>
 #include <vector>
 #include <stdlib.h>
-
+#include <fcntl.h>
 
 using namespace std;
 
@@ -29,42 +29,68 @@ void parse(char * line, vector<string> & input) {
 	    char * a = strstr(pch, "&&");
 	    char * b = strstr(pch, "||");
 	    char * c = strstr(pch, ";");
+        char * d = strstr(pch, "<");
+        char * e = strstr(pch, ">");
+        char * f = strstr(pch, "|");
 
 	    // If there are connectors, break up the string
 	    // into parts and add them individually to the vector
-	    if (a!=NULL || b!=NULL || c!=NULL) {
+	    if (a!=NULL || b!=NULL || c!=NULL || d!=NULL || e!=NULL || f!=NULL) {
 		while (strlen(pch) != 0 ) {
 
 		    // Checks for && and ||
 		    if ((pch[0] == '&' && pch[1] == '&') ||
 			(pch[0] == '|' && pch[1] == '|')) {
 			
-			string tmp;
-			tmp += *pch;
-			tmp += *(pch+1);
-			tmp[2] = '\0';
+			    string tmp;
+			    tmp += *pch;
+			    tmp += *(pch+1);
+			    tmp[2] = '\0';
 			
-			input.push_back(tmp);
-			memmove(pch, pch+2, strlen(pch) - 2);
-			pch[strlen(pch)-2] = '\0';
+			    input.push_back(tmp);
+			    memmove(pch, pch+2, strlen(pch) - 2);
+			    pch[strlen(pch)-2] = '\0';
 		    }
 		    // Check for semicolons
 		    else if (*pch == ';') {
-			input.push_back(";");
-			memmove(pch, pch+1, strlen(pch) -1);
-			pch[strlen(pch)-1] = '\0';
+			    input.push_back(";");
+			    memmove(pch, pch+1, strlen(pch) -1);
+			    pch[strlen(pch)-1] = '\0';
 		    }
+            // Check for input/output redirectors
+            else if (*pch == '<') {
+                input.push_back("<");
+                memmove(pch, pch+1, strlen(pch) -1);
+                pch[strlen(pch)-1] = '\0';
+            }
+            else if (*pch == '>') {
+                if (*(pch+1) == '>') {
+                    input.push_back(">>");
+                    memmove(pch, pch+2, strlen(pch) -2);
+                    pch[strlen(pch)-2] = '\0';
+                }
+                else {
+                    input.push_back(">");
+                    memmove(pch, pch+1, strlen(pch) -1);
+                    pch[strlen(pch)-1] = '\0';
+                }
+            }
+            else if (*pch == '|') {
+                input.push_back("|");
+                memmove(pch, pch+1, strlen(pch) -1);
+                pch[strlen(pch) -1] = '\0';
+            }
 		    else {
 			string word;
 			int numletters = 0;
 
-			char *d = pch;
-			while (d!=a && d!=b && d!=c) {
-			    if (*d == '\0')
+			char *z = pch;
+			while (z!=a && z!=b && z!=c && z!=d && z!=e && z!=f) {
+			    if (*z == '\0')
 				break;
-			    word += *d;
+			    word += *z;
 			    numletters++;
-			    d++;
+			    z++;
 			}
 			input.push_back(word);
 			memmove(pch, pch+numletters, strlen(pch) -numletters);
@@ -74,6 +100,9 @@ void parse(char * line, vector<string> & input) {
 		    a = strstr(pch, "&&");
 		    b = strstr(pch, "||");
 		    c = strstr(pch, ";");
+            d = strstr(pch, "<");
+            e = strstr(pch, ">");
+            f = strstr(pch, "|");
 		}
 	    }
 
@@ -113,6 +142,14 @@ int main() {
     vector<string> input; 
     int status=0;
 
+    int savestdin;
+    if ((savestdin = dup(0)) == -1)
+        perror("dup");
+
+    int savestdout;
+    if ((savestdout = dup(1)) == -1)
+        perror("dup");
+
     // Get username
     char * usrname = getlogin();
     if (usrname == NULL){
@@ -132,6 +169,13 @@ int main() {
 
     // Main loop
     while (1) {
+
+    //Restore stdin and stdout
+    if ((dup2(savestdin,0)) == -1)
+        perror("dup2");
+
+    if ((dup2(savestdout,0)) == -1)
+        perror("dup2");
 	
 	status = 0;
 	if (input.size() != 0)
@@ -151,8 +195,11 @@ int main() {
 	if (input.size() == 0)
 	    continue;
 
-    for (int i = 0; i < input.size(); i++)
+    for (int i = 0; i < input.size(); i++) {
 	    if (strcmp(input[i].c_str(), "exit") == 0) exit(0);
+        
+        //cout << input[i] << endl;
+    }
 
 
 	int pid=fork();
@@ -170,36 +217,59 @@ loop:
 
 	    end = input.size();
 	    for (i = start; i < input.size(); i++) {
+        
+            //input output redirection
+            if (input[i] == ">" || input[i] == ">>" || input[i]=="<" || input[i] == "|") {
+            
+                if (input[i] == ">") {
+                    int fdo = open(input[i+1].c_str(), O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
+                    if (fdo==-1)
+                        perror("open");
+
+                    status = close(STDOUT_FILENO);
+                    if (status == -1)
+                        perror("close");
+
+                    if ((dup(fdo)) == -1)
+                        perror("dup");
+
+                    close(fdo);
+
+                    end = i;
+                    break;
 
 
+                }
+            }
+        
 
-		if (input[i] == ";" || input[i] == "&&" || input[i] == "||") {
-		    string connector = input[i];
+            else if (input[i] == ";" || input[i] == "&&" || input[i] == "||") {
+		        string connector = input[i];
 
-		    pid2 = fork();
-		    if (pid2 == -1) {
-			perror("fork");
-			exit(1);
-		    }
-		    if (pid2!=0) {
-			if (-1 == wait(&status))
-			    perror("wait");
+		        pid2 = fork();
+		        if (pid2 == -1) {
+			        perror("fork");
+			        exit(1);
+		        }
+		        if (pid2!=0) {
+			        if (-1 == wait(&status))
+			            perror("wait");
 			
-			if (connector == "&&" && status != 0)
-			    exit(1);
+			        if (connector == "&&" && status != 0)
+			            exit(1);
 
-			if (connector == "||" && status == 0)
-			    exit(0);
+			        if (connector == "||" && status == 0)
+			            exit(0);
 
-			start = i + 1;
-			goto loop;
+			        start = i + 1;
+			        goto loop;
 
+		        }
+		        else {
+			        end = i;
+			        break;
+		        }
 		    }
-		    else {
-			end = i;
-			break;
-		    }
-		}
 	    }
 
 	    execute(input, start, end);
