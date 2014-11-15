@@ -150,9 +150,9 @@ int main() {
 
 	if (input.size() == 0)
 	    continue;
-	
-	if (strcmp(input[0].c_str(), "exit") == 0)
-	    exit(0);
+
+    for (int i = 0; i < input.size(); i++)
+	    if (strcmp(input[i].c_str(), "exit") == 0) exit(0);
 
 
 	int pid=fork();
