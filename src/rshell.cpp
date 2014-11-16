@@ -113,7 +113,7 @@ void parse(char * line, vector<string> & input) {
 	}
 }
 
-void execute(vector<string> & input, int start, int end) {
+void execute(const vector<string> & input, int start, int end) {
 
     //Call execvp, based on which elements in the string vector to use
     char * argv[5];
@@ -124,13 +124,17 @@ void execute(vector<string> & input, int start, int end) {
 		argv[i] = new char[5];
 	    }
 
-        cerr << "execvp sent:\n";
+        //debug
+        //cerr << "sent to execvp:\n";
 
 	    for (i = 0; i < (end-start); i++) {
-        cerr << input[i+start] << endl;
 		strcpy(argv[i], input[i+start].c_str());
-	    }
+	    //cerr << input[i+start] << endl;
+        }
 	    
+        //debug
+        //cerr << endl;
+
 	    argv[i] = NULL;
 
 	    int status = execvp(argv[0], argv);
@@ -201,8 +205,6 @@ int main() {
 
     for (int i = 0; i < input.size(); i++) {
 	    if (strcmp(input[i].c_str(), "exit") == 0) exit(0);
-        
-        //cout << input[i] << endl;
     }
 
 
@@ -218,14 +220,11 @@ int main() {
 	    unsigned i;
 		
 loop:		
-
 	    end = input.size();
 	    
-        for (i = start; i < input.size(); i++) {
-        
+        for (i = start; i < input.size(); ) {
             //input output redirection
             if (input[i] == ">" || input[i] == ">>" || input[i]=="<" || input[i] == "|") {
-
 
                 if (input[i] == ">") {
 
@@ -242,6 +241,14 @@ loop:
 
                         if ((close(fdo)) == -1)
                             perror("close");
+
+                        input.erase(input.begin() + i);
+
+                        input.erase(input.begin() + i);
+                        
+                        if (input[i] == ">" || input[i] == ">>" || 
+                                        input[i+2]=="<" || input[i+2] == "|")
+                            continue; 
 
                         end = i;
                         break;
@@ -264,7 +271,15 @@ loop:
 
                         if ((close(fdo)) == -1)
                             perror("close");
+                        
+                        input.erase(input.begin() + i);
 
+                        input.erase(input.begin() + i);
+                        
+                        if (input[i] == ">" || input[i] == ">>" || 
+                                        input[i+2]=="<" || input[i+2] == "|")
+                            continue; 
+                        
                         end = i;
                         break;
                 }
@@ -284,7 +299,15 @@ loop:
 
                         if ((close(fdi)) == -1)
                             perror("close");
-                    
+                        
+                        input.erase(input.begin() + i);
+
+                        input.erase(input.begin() + i);
+                        
+                        if (input[i] == ">" || input[i] == ">>" || 
+                                        input[i+2]=="<" || input[i+2] == "|")
+                            continue; 
+
                         end = i;
                         break;
                 }
@@ -359,7 +382,9 @@ loop:
 			        break;
 		        }
 		    }
-	    }
+	    i++; 
+        }
+
 
 	    execute(input, start, end);
 
