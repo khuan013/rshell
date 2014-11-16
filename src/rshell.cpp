@@ -124,7 +124,10 @@ void execute(vector<string> & input, int start, int end) {
 		argv[i] = new char[5];
 	    }
 
+        cerr << "execvp sent:\n";
+
 	    for (i = 0; i < (end-start); i++) {
+        cerr << input[i+start] << endl;
 		strcpy(argv[i], input[i+start].c_str());
 	    }
 	    
@@ -170,14 +173,15 @@ int main() {
     // Main loop
     while (1) {
 
-    //Restore stdin and stdout
-    if ((dup2(savestdin,0)) == -1)
-        perror("dup2");
+   	 //Restore stdin and stdout
+        if ((dup2(savestdin,0)) == -1)
+            perror("dup2");
 
-    if ((dup2(savestdout,0)) == -1)
-        perror("dup2");
-	
+        if ((dup2(savestdout,0)) == -1)
+            perror("dup2");
+
 	status = 0;
+
 	if (input.size() != 0)
 	    input.clear();
 		
@@ -216,27 +220,112 @@ int main() {
 loop:		
 
 	    end = input.size();
-	    for (i = start; i < input.size(); i++) {
+	    
+        for (i = start; i < input.size(); i++) {
         
             //input output redirection
             if (input[i] == ">" || input[i] == ">>" || input[i]=="<" || input[i] == "|") {
-            
+
+
                 if (input[i] == ">") {
-                    int fdo = open(input[i+1].c_str(), O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
-                    if (fdo==-1)
-                        perror("open");
 
-                    status = close(STDOUT_FILENO);
-                    if (status == -1)
-                        perror("close");
+                        int fdo = open(input[i+1].c_str(), O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
+                        if (fdo==-1)
+                            perror("open");
 
-                    if ((dup(fdo)) == -1)
-                        perror("dup");
+                        status = close(STDOUT_FILENO);
+                        if (status == -1)
+                            perror("close");
 
-                    close(fdo);
+                        if ((dup(fdo)) == -1)
+                            perror("dup");
 
-                    end = i;
-                    break;
+                        if ((close(fdo)) == -1)
+                            perror("close");
+
+                        end = i;
+                        break;
+                    }
+                    
+            
+                else if (input[i] == ">>") {
+                    
+                        int fdo = open(input[i+1].c_str(), O_CREAT | O_WRONLY | O_APPEND, 
+                                     S_IRUSR | S_IWUSR);
+                        if (fdo==-1)
+                            perror("open");
+
+                        status = close(STDOUT_FILENO);
+                        if (status == -1)
+                            perror("close");
+
+                        if ((dup(fdo)) == -1)
+                            perror("dup");
+
+                        if ((close(fdo)) == -1)
+                            perror("close");
+
+                        end = i;
+                        break;
+                }
+
+                else if (input[i] == "<") {
+                 
+                        int fdi = open(input[i+1].c_str(), O_RDONLY, 0);
+                        if (fdi==-1)
+                            perror("open");
+
+                        status = close(STDIN_FILENO);
+                        if (status == -1)
+                            perror("close");
+
+                        if ((dup(fdi)) == -1)
+                            perror("dup");
+
+                        if ((close(fdi)) == -1)
+                            perror("close");
+                    
+                        end = i;
+                        break;
+                }
+
+                else if (input[i] == "|") {
+                    int pfd[2];
+
+                    if ((pipe(pfd)) == -1)
+                        perror("pipe");
+
+                    
+                    int pid3 = fork();
+                    if (pid3 == -1) {
+                        perror("fork");
+                        exit(1);
+                    } 
+                    if (pid3==0) {
+                        cout << "This is the child process";
+
+                        if ((dup2(pfd[1], 1)) == -1)
+                            perror("dup2");
+
+                        if ((close(pfd[0])) == -1)
+                            perror("close");
+                        
+                        end = i;
+                        break;
+
+                    }                    
+                    else {
+                        close(STDIN_FILENO);
+                        dup2(pfd[0], 0);
+                        close(pfd[1]);
+                        
+                        if (-1 == wait(0))
+                            perror("wait");
+
+                        start = i+1;
+                        goto loop;
+
+                    }
 
 
                 }
