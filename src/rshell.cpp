@@ -247,7 +247,7 @@ loop:
                         input.erase(input.begin() + i);
                         
                         if (input[i] == ">" || input[i] == ">>" || 
-                                        input[i+2]=="<" || input[i+2] == "|")
+                                        input[i]=="<" || input[i] == "|")
                             continue; 
 
                         end = i;
@@ -277,7 +277,7 @@ loop:
                         input.erase(input.begin() + i);
                         
                         if (input[i] == ">" || input[i] == ">>" || 
-                                        input[i+2]=="<" || input[i+2] == "|")
+                                        input[i]=="<" || input[i] == "|")
                             continue; 
                         
                         end = i;
@@ -305,7 +305,7 @@ loop:
                         input.erase(input.begin() + i);
                         
                         if (input[i] == ">" || input[i] == ">>" || 
-                                        input[i+2]=="<" || input[i+2] == "|")
+                                        input[i]=="<" || input[i] == "|")
                             continue; 
 
                         end = i;
