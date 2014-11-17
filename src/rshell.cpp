@@ -14,16 +14,22 @@ using namespace std;
 
 
 void parse(char * line, vector<string> & input) {
-    
-
+     
     char * pch;
+    int find_quote = 0;
 	pch = strtok (line, " \n");
 	while (pch!= NULL) {
-	    
+        
+        find_quote = 0;
+
+        if (*(pch + strlen(pch) + 1) == '"')
+            find_quote = 1;
+                    
 	    // Ignore after comments
 	    if (*pch == '#')
 		break;
-	    
+
+
 	    // Check for && and ||
 	    // Break input up
 	    char * a = strstr(pch, "&&");
@@ -37,9 +43,10 @@ void parse(char * line, vector<string> & input) {
 	    // into parts and add them individually to the vector
 	    if (a!=NULL || b!=NULL || c!=NULL || d!=NULL || e!=NULL || f!=NULL) {
 		while (strlen(pch) != 0 ) {
-
-		    // Checks for && and ||
-		    if ((pch[0] == '&' && pch[1] == '&') ||
+            
+                
+            // Checks for && and ||
+            if ((pch[0] == '&' && pch[1] == '&') ||
 			(pch[0] == '|' && pch[1] == '|')) {
 			
 			    string tmp;
@@ -58,29 +65,28 @@ void parse(char * line, vector<string> & input) {
 			    pch[strlen(pch)-1] = '\0';
 		    }
             // Check for input/output redirectors
-            else if (*pch == '<') {
-                input.push_back("<");
-                memmove(pch, pch+1, strlen(pch) -1);
-                pch[strlen(pch)-1] = '\0';
-            }
-            else if (*pch == '>') {
-                if (*(pch+1) == '>') {
+            else if (*pch == '<' || *pch =='>' || *pch == '|') {
+                if (*pch == '>' && *(pch+1) == '>') {
                     input.push_back(">>");
-                    memmove(pch, pch+2, strlen(pch) -2);
+                    memmove(pch, pch+2, strlen(pch)-2);
                     pch[strlen(pch)-2] = '\0';
                 }
+                else if (*pch == '<' && *(pch+1) == '<' && *(pch+2)=='<') {
+                    input.push_back("<<<");
+                    memmove(pch, pch+3, strlen(pch)-3);
+                    pch[strlen(pch)-3] = '\0';
+                }
                 else {
-                    input.push_back(">");
-                    memmove(pch, pch+1, strlen(pch) -1);
+                    string tmp;
+                    tmp += *pch;
+                    tmp[1] = '\0';
+                    input.push_back(tmp);
+                    memmove(pch, pch+1, strlen(pch)-1);
                     pch[strlen(pch)-1] = '\0';
                 }
             }
-            else if (*pch == '|') {
-                input.push_back("|");
-                memmove(pch, pch+1, strlen(pch) -1);
-                pch[strlen(pch) -1] = '\0';
-            }
-		    else {
+            
+            else {
 			string word;
 			int numletters = 0;
 
@@ -107,9 +113,15 @@ void parse(char * line, vector<string> & input) {
 	    }
 
 	    // If no connectors, just add to vector	
-	    if (*pch != '\0' && *pch != '\n' && *pch != '#')
-		input.push_back(pch);
-	    pch = strtok (NULL, " \n");
+	    if (*pch != '\0' && *pch != '\n' && *pch != '#') {
+            input.push_back(pch);
+
+        }
+
+        if (find_quote == 1)
+            pch = strtok(NULL, "\"");
+        else
+	        pch = strtok (NULL, " \n");
 	}
 }
 
@@ -224,13 +236,16 @@ loop:
 	    
         for (i = start; i < input.size(); ) {
             //input output redirection
-            if (input[i] == ">" || input[i] == ">>" || input[i]=="<" || input[i] == "|") {
+            if (input[i] == ">" || input[i] == ">>" || input[i]=="<" 
+                            || input[i] == "<<<" || input[i] == "|") {
 
                 if (input[i] == ">") {
 
                         int fdo = open(input[i+1].c_str(), O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
-                        if (fdo==-1)
+                        if (fdo==-1) {
                             perror("open");
+                            exit(1);
+                        }
 
                         status = close(STDOUT_FILENO);
                         if (status == -1)
@@ -246,9 +261,8 @@ loop:
 
                         input.erase(input.begin() + i);
                         
-                        if (input[i] == ">" || input[i] == ">>" || 
-                                        input[i]=="<" || input[i] == "|")
-                            continue; 
+                       if ((input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'))
+                            continue;
 
                         end = i;
                         break;
@@ -259,8 +273,10 @@ loop:
                     
                         int fdo = open(input[i+1].c_str(), O_CREAT | O_WRONLY | O_APPEND, 
                                      S_IRUSR | S_IWUSR);
-                        if (fdo==-1)
+                        if (fdo==-1) {
                             perror("open");
+                            exit(1);
+                        }
 
                         status = close(STDOUT_FILENO);
                         if (status == -1)
@@ -276,9 +292,8 @@ loop:
 
                         input.erase(input.begin() + i);
                         
-                        if (input[i] == ">" || input[i] == ">>" || 
-                                        input[i]=="<" || input[i] == "|")
-                            continue; 
+                        if ((input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'))
+                            continue;
                         
                         end = i;
                         break;
@@ -287,8 +302,10 @@ loop:
                 else if (input[i] == "<") {
                  
                         int fdi = open(input[i+1].c_str(), O_RDONLY, 0);
-                        if (fdi==-1)
+                        if (fdi==-1) {
                             perror("open");
+                            exit(1);
+                        }
 
                         status = close(STDIN_FILENO);
                         if (status == -1)
@@ -304,14 +321,44 @@ loop:
 
                         input.erase(input.begin() + i);
                         
-                        if (input[i] == ">" || input[i] == ">>" || 
-                                        input[i]=="<" || input[i] == "|")
-                            continue; 
+                        if ((input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'))
+                            continue;
 
                         end = i;
                         break;
                 }
 
+                else if (input[i] == "<<<") {
+                        
+                    int pfd[2];
+
+                    if ((pipe(pfd)) == -1)
+                        perror("pipe");
+
+
+                        char buf[128];
+                        strcpy(buf, input[i+1].c_str());
+                            
+                        buf[strlen(buf)] = '\n';
+
+                        if ((write(pfd[1], buf, strlen(buf)) == -1))
+                            perror("write");
+
+                        if ((dup2(pfd[0], 0)) == -1)
+                            perror("dup2");
+
+                        close (pfd[1]);
+                            
+                        input.erase(input.begin() + i);
+                        input.erase(input.begin() + i);
+                        
+                        if ((input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'))
+                            continue;
+
+                        end = i;
+                        break;
+                        
+                }
                 else if (input[i] == "|") {
                     int pfd[2];
 
@@ -325,7 +372,6 @@ loop:
                         exit(1);
                     } 
                     if (pid3==0) {
-                        cout << "This is the child process";
 
                         if ((dup2(pfd[1], 1)) == -1)
                             perror("dup2");
@@ -338,9 +384,14 @@ loop:
 
                     }                    
                     else {
-                        close(STDIN_FILENO);
-                        dup2(pfd[0], 0);
-                        close(pfd[1]);
+                        if((close(STDIN_FILENO)) == -1)
+                            perror("close");
+                        
+                        if ((dup2(pfd[0], 0)) == -1)
+                            perror("dup2");
+                        
+                        if ((close(pfd[1])) == -1)
+                            perror("close");
                         
                         if (-1 == wait(0))
                             perror("wait");
