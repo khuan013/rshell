@@ -146,17 +146,10 @@ void execute(const vector<string> & input, int start, int end) {
 		argv[i] = new char[5];
 	    }
 
-        //debug
-        //cerr << "sent to execvp:\n";
-
 	    for (i = 0; i < (end-start); i++) {
 		strcpy(argv[i], input[i+start].c_str());
-	    //cerr << input[i+start] << endl;
         }
 	    
-        //debug
-        //cerr << endl;
-
 	    argv[i] = NULL;
 
 	    int status = execvp(argv[0], argv);
@@ -262,7 +255,6 @@ loop:
                     }
                     
                     int file_no = input[i][0] - '0';
-                    cerr << file_no<<endl;;
 
                     status = close(file_no);
                     if (status == -1)
