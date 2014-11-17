@@ -29,6 +29,16 @@ void parse(char * line, vector<string> & input) {
 	    if (*pch == '#')
 		break;
 
+        if (isdigit(*pch) && *(pch+1) == '>') {
+            input.push_back(pch);
+            if (find_quote == 1)
+                pch = strtok(NULL, "\"");
+            else
+	            pch = strtok (NULL, " \n");
+            continue;
+        }
+            
+
 
 	    // Check for && and ||
 	    // Break input up
@@ -210,6 +220,10 @@ int main() {
 
 	parse(line, input);
 
+    //debuging
+    //for (int i = 0; i < input.size(); i++)
+      //      cerr << input[i] << endl;
+
 	delete line;
 
 	if (input.size() == 0)
@@ -237,7 +251,44 @@ loop:
         for (i = start; i < input.size(); ) {
             //input output redirection
             if (input[i] == ">" || input[i] == ">>" || input[i]=="<" 
-                            || input[i] == "<<<" || input[i] == "|") {
+                            || input[i] == "<<<" || input[i] == "|"
+                            || (isdigit(input[i][0]) && input[i][1] == '>')) {
+
+                if (isdigit(input[i][0]) && input[i][1] == '>') {
+                    int fdo = open(input[i+1].c_str(), O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
+                    if (fdo==-1) {
+                        perror("open");
+                        exit(1);
+                    }
+                    
+                    int file_no = input[i][0] - '0';
+                    cerr << file_no<<endl;;
+
+                    status = close(file_no);
+                    if (status == -1)
+                        perror("close");
+
+                    if ((dup(fdo)) == -1)
+                        perror("dup");
+
+                    if ((close(fdo)) == -1)
+                        perror("close");
+
+                    input.erase(input.begin() + i);
+                    input.erase(input.begin() + i);
+    
+                    if (input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'
+                                            || (isdigit(input[i][0]) && input[i][1] == '>'))
+                        continue;
+                    
+                    else {
+                        end = i;
+                        break;
+                    }
+
+
+
+                }
 
                 if (input[i] == ">") {
 
@@ -261,11 +312,14 @@ loop:
 
                         input.erase(input.begin() + i);
                         
-                       if ((input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'))
+                        if (input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'
+                                            || (isdigit(input[i][0]) && input[i][1] == '>'))
                             continue;
-
-                        end = i;
-                        break;
+                    
+                        else {
+                            end = i;
+                            break;
+                        }
                     }
                     
             
@@ -292,11 +346,15 @@ loop:
 
                         input.erase(input.begin() + i);
                         
-                        if ((input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'))
+                        if (input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'
+                                            || (isdigit(input[i][0]) && input[i][1] == '>'))
+
                             continue;
-                        
-                        end = i;
-                        break;
+                    
+                        else {
+                            end = i;
+                            break;
+                        }
                 }
 
                 else if (input[i] == "<") {
@@ -321,11 +379,14 @@ loop:
 
                         input.erase(input.begin() + i);
                         
-                        if ((input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'))
+                        if (input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'
+                                            || (isdigit(input[i][0]) && input[i][1] == '>'))
                             continue;
-
-                        end = i;
-                        break;
+                    
+                        else {
+                            end = i;
+                            break;
+                        }
                 }
 
                 else if (input[i] == "<<<") {
@@ -352,11 +413,14 @@ loop:
                         input.erase(input.begin() + i);
                         input.erase(input.begin() + i);
                         
-                        if ((input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'))
+                        if (input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'
+                                            || (isdigit(input[i][0]) && input[i][1] == '>'))
                             continue;
-
-                        end = i;
-                        break;
+                    
+                        else {
+                            end = i;
+                            break;
+                        }
                         
                 }
                 else if (input[i] == "|") {
