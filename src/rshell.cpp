@@ -9,6 +9,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <pwd.h>
 
 using namespace std;
 
@@ -29,17 +30,6 @@ void parse(char * line, vector<string> & input) {
 	    if (*pch == '#')
 		break;
 
-        if (isdigit(*pch) && *(pch+1) == '>') {
-            input.push_back(pch);
-            if (find_quote == 1)
-                pch = strtok(NULL, "\"");
-            else
-	            pch = strtok (NULL, " \n");
-            continue;
-        }
-            
-
-
 	    // Check for && and ||
 	    // Break input up
 	    char * a = strstr(pch, "&&");
@@ -51,9 +41,28 @@ void parse(char * line, vector<string> & input) {
 
 	    // If there are connectors, break up the string
 	    // into parts and add them individually to the vector
-	    if (a!=NULL || b!=NULL || c!=NULL || d!=NULL || e!=NULL || f!=NULL) {
+	    if (a!=NULL || b!=NULL || c!=NULL || d!=NULL || e!=NULL || f!=NULL
+                    || (isdigit(*pch) && pch[1] == '>')) {
 		while (strlen(pch) != 0 ) {
+            if (isdigit(pch[0]) && pch[1] == '>') {
+                string tmp;
+                int stringlen = 0;
+                tmp += *pch;
+                tmp += pch[1];
+                if (pch[1] == '>' && pch[2] == '>') {
+                    tmp += pch[2];
+                    stringlen = 3;
+                    tmp[3] = '\0';
+                    }
+                else {
+                    stringlen = 2;
+                    tmp[2] = '\0';
+                }
+                input.push_back(tmp);
+                memmove(pch, pch +stringlen, strlen(pch) - stringlen);
+                pch[strlen(pch) - stringlen] = '\0';
             
+            }
                 
             // Checks for && and ||
             if ((pch[0] == '&' && pch[1] == '&') ||
@@ -99,16 +108,17 @@ void parse(char * line, vector<string> & input) {
             else {
 			string word;
 			int numletters = 0;
-
-			char *z = pch;
-			while (z!=a && z!=b && z!=c && z!=d && z!=e && z!=f) {
-			    if (*z == '\0')
-				break;
-			    word += *z;
+			char z = *pch;
+			int i = 1;
+            while ( z!= '\0' && z!= ';' && z!= '|' && z!= '&' && z!= '<' && z!= '>'
+                            && !(isdigit(z) && pch[i] == '>')) {
+			    word += z;
 			    numletters++;
-			    z++;
+			    z = pch[i];
+                i++;
 			}
-			input.push_back(word);
+            if (numletters!=0) 
+			    input.push_back(word);
 			memmove(pch, pch+numletters, strlen(pch) -numletters);
 			pch[strlen(pch)-numletters] = '\0';
 		    }
@@ -138,12 +148,12 @@ void parse(char * line, vector<string> & input) {
 void execute(const vector<string> & input, int start, int end) {
 
     //Call execvp, based on which elements in the string vector to use
-    char * argv[5];
+    char * argv[20];
 	    
 	    int i = 0;
 	    
 	    for (i = 0; i <= (end - start); i++) {
-		argv[i] = new char[5];
+		argv[i] = new char[20];
 	    }
 
 	    for (i = 0; i < (end-start); i++) {
@@ -173,10 +183,12 @@ int main() {
         perror("dup");
 
     // Get username
-    char * usrname = getlogin();
-    if (usrname == NULL){
-	perror ("getlogin");
-	exit(1);
+    char * usrname;
+    struct passwd *pass = getpwuid(getuid());
+    usrname = pass->pw_name;
+    if (pass == NULL) {
+	perror ("getpwuid");
+    exit(1);    
     }
 
     // Get hostname
@@ -213,9 +225,10 @@ int main() {
 
 	parse(line, input);
 
-    //debuging
+    //debugging
+    //cerr << "AFTER PARSING: \n";
     //for (int i = 0; i < input.size(); i++)
-      //      cerr << input[i] << endl;
+            //cerr << input[i] << endl;
 
 	delete line;
 
@@ -247,14 +260,27 @@ loop:
                             || input[i] == "<<<" || input[i] == "|"
                             || (isdigit(input[i][0]) && input[i][1] == '>')) {
 
-                if (isdigit(input[i][0]) && input[i][1] == '>') {
-                    int fdo = open(input[i+1].c_str(), O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
+                if ((isdigit(input[i][0]) && input[i][1] == '>') || input[i][0] == '>') {
+                    
+                    int flags = 0;
+                    int file_no = 1;
+                    flags |= O_CREAT | O_WRONLY;
+                    
+                    if ((input[i][0] == '>' && input[i][1] == '>') ||
+                                input[i][2] == '>')
+                            flags |= O_APPEND;
+                        else
+                            flags |= O_TRUNC;
+
+
+                    int fdo = open(input[i+1].c_str(), flags, S_IRUSR | S_IWUSR);
                     if (fdo==-1) {
                         perror("open");
                         exit(1);
                     }
                     
-                    int file_no = input[i][0] - '0';
+                    if (isdigit(input[i][0]))
+                        file_no = input[i][0] - '0';
 
                     status = close(file_no);
                     if (status == -1)
@@ -280,73 +306,6 @@ loop:
 
 
 
-                }
-
-                if (input[i] == ">") {
-
-                        int fdo = open(input[i+1].c_str(), O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
-                        if (fdo==-1) {
-                            perror("open");
-                            exit(1);
-                        }
-
-                        status = close(STDOUT_FILENO);
-                        if (status == -1)
-                            perror("close");
-
-                        if ((dup(fdo)) == -1)
-                            perror("dup");
-
-                        if ((close(fdo)) == -1)
-                            perror("close");
-
-                        input.erase(input.begin() + i);
-
-                        input.erase(input.begin() + i);
-                        
-                        if (input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'
-                                            || (isdigit(input[i][0]) && input[i][1] == '>'))
-                            continue;
-                    
-                        else {
-                            end = i;
-                            break;
-                        }
-                    }
-                    
-            
-                else if (input[i] == ">>") {
-                    
-                        int fdo = open(input[i+1].c_str(), O_CREAT | O_WRONLY | O_APPEND, 
-                                     S_IRUSR | S_IWUSR);
-                        if (fdo==-1) {
-                            perror("open");
-                            exit(1);
-                        }
-
-                        status = close(STDOUT_FILENO);
-                        if (status == -1)
-                            perror("close");
-
-                        if ((dup(fdo)) == -1)
-                            perror("dup");
-
-                        if ((close(fdo)) == -1)
-                            perror("close");
-                        
-                        input.erase(input.begin() + i);
-
-                        input.erase(input.begin() + i);
-                        
-                        if (input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'
-                                            || (isdigit(input[i][0]) && input[i][1] == '>'))
-
-                            continue;
-                    
-                        else {
-                            end = i;
-                            break;
-                        }
                 }
 
                 else if (input[i] == "<") {
@@ -390,9 +349,11 @@ loop:
 
 
                         char buf[128];
+                        memset(buf, 0, 128);
                         strcpy(buf, input[i+1].c_str());
                             
                         buf[strlen(buf)] = '\n';
+                        buf[strlen(buf)+1] = '\0';
 
                         if ((write(pfd[1], buf, strlen(buf)) == -1))
                             perror("write");
