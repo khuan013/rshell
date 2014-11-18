@@ -1,0 +1,333 @@
+Script started on Mon 17 Nov 2014 10:20:05 PM PST
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ #This is the testing script for hw2 rshel[K[K[K[K[Kpiping
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ #Kenneth Huang
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ #compiling the program
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ make new
+rm -rf bin
+mkdir -p bin
+cd src && g++ -Wall -Werror -ansi -pedantic -o rshell rshell.cpp &&\
+	mv rshell ../bin
+mkdir -p bin
+cd src && g++ -Wall -Werror -ansi -pedantic -o ls ls.cpp &&\
+	mv ls ../bin
+mkdir -p bin
+cd src && g++ -Wall -Werror -ansi -pedantic -o cp cp.cpp && \
+		mv cp ../bin
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ #Running rshell
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ bin/rshell
+kenny@kenny-MS-7850$ #Testing input redirection `<`
+kenny@kenny-MS-7850$ cat list
+Cat
+Zebra
+Donkey
+Apple
+Fat
+Banana
+Great
+Elephant
+Hat
+kenny@kenny-MS-7850$ cat < list
+Cat
+Zebra
+Donkey
+Apple
+Fat
+Banana
+Great
+Elephant
+Hat
+kenny@kenny-MS-7850$ #Testing output redirection '>" '
+kenny@kenny-MS-7850$ ls > file
+kenny@kenny-MS-7850$ cat file
+bin
+error.cpp
+file
+LICENSE
+list
+Makefile
+README.md
+src
+tests
+kenny@kenny-MS-7850$ cat list > file
+kenny@kenny-MS-7850$ cat file
+Cat
+Zebra
+Donkey
+Apple
+Fat
+Banana
+Great
+Elephant
+Hat
+kenny@kenny-MS-7850$ echo "Hello World" > file
+kenny@kenny-MS-7850$ cat file
+Hello World
+kenny@kenny-MS-7850$ echo " Hello this is a string > file
+kenny@kenny-MS-7850$ cat file
+Hello this is a string
+kenny@kenny-MS-7850$ #Testing output redirection `>>`
+kenny@kenny-MS-7850$ rm file
+kenny@kenny-MS-7850$ echo "This is the first string" >> file
+kenny@kenny-MS-7850$ cat file
+This is the first string
+kenny@kenny-MS-7850$ echo "This is the 2 second string" >> file
+kenny@kenny-MS-7850$ cat file
+This is the first string
+This is the second string
+kenny@kenny-MS-7850$ cat list >> file
+kenny@kenny-MS-7850$ cat file
+This is the first string
+This is the second string
+Cat
+Zebra
+Donkey
+Apple
+Fat
+Banana
+Great
+Elephant
+Hat
+kenny@kenny-MS-7850$ rm file
+kenny@kenny-MS-7850$ #Testing piping
+kenny@kenny-MS-7850$ cat list | grep Cat
+Cat
+kenny@kenny-MS-7850$ cat list | grep apple
+kenny@kenny-MS-7850$ cat list |\ g    grep a
+Cat
+Zebra
+Fat
+Banana
+Great
+Elephant
+Hat
+kenny@kenny-MS-7850$ cat list |\ \sor       sort
+Apple
+Banana
+Cat
+Donkey
+Elephant
+Fat
+Great
+Hat
+Zebra
+kenny@kenny-MS-7850$ cat list |\ s    sort | tr A a-z A-Z
+APPLE
+BANANA
+CAT
+DONKEY
+ELEPHANT
+FAT
+GREAT
+HAT
+ZEBRA
+kenny@kenny-MS-7850$ #Testing io redirection combinations
+kenny@kenny-MS-7850$ cat < list > file
+kenny@kenny-MS-7850$ cat file
+Cat
+Zebra
+Donkey
+Apple
+Fat
+Banana
+Great
+Elephant
+Hat
+kenny@kenny-MS-7850$ echo "G Monkeys" >> file
+kenny@kenny-MS-7850$ cat file | sort           < file |\ so     sort > sortedfile
+kenny@kenny-MS-7850$ cat file
+Cat
+Zebra
+Donkey
+Apple
+Fat
+Banana
+Great
+Elephant
+Hat
+Monkeys
+kenny@kenny-MS-7850$ cat sortedfile
+Apple
+Banana
+Cat
+Donkey
+Elephant
+Fat
+Great
+Hat
+Monkeys
+Zebra
+kenny@kenny-MS-7850$ cat file |\    tr a-z A-Z | tee uppercasefile |\    tr A-Z a-z > lowercasefile
+kenny@kenny-MS-7850$ cat uppercasefile
+CAT
+ZEBRA
+DONKEY
+APPLE
+FAT
+BANANA
+GREAT
+ELEPHANT
+HAT
+MONKEYS
+kenny@kenny-MS-7850$ cat lowercasefile
+cat
+zebra
+donkey
+apple
+fat
+banana
+great
+elephant
+hat
+monkeys
+kenny@kenny-MS-7850$ rm uppercasefile lowercasefile
+kenny@kenny-MS-7850$ cat list
+Cat
+Zebra
+Donkey
+Apple
+Fat
+Banana
+Great
+Elephant
+Hat
+kenny@kenny-MS-7850$ cat < list >> sorted  list | sort       
+kenny@kenny-MS-7850$ cat sortedlist
+Cat
+Zebra
+Donkey
+Apple
+Fat
+Banana
+Great
+Elephant
+Hat
+kenny@kenny-MS-7850$ cat < list >> sortedlist
+kenny@kenny-MS-7850$ ls  cat sortedlist
+Cat
+Zebra
+Donkey
+Apple
+Fat
+Banana
+Great
+Elephant
+Hat
+Cat
+Zebra
+Donkey
+Apple
+Fat
+Banana
+Great
+Elephant
+Hat
+kenny@kenny-MS-7850$ cat sortedlist | sort > sortedL list
+kenny@kenny-MS-7850$ cat sortedlist
+Apple
+Apple
+Banana
+Banana
+Cat
+Cat
+Donkey
+Donkey
+Elephant
+Elephant
+Fat
+Fat
+Great
+Great
+Hat
+Hat
+Zebra
+Zebra
+kenny@kenny-MS-7850$ #Testing extra credit 1 `<<<`
+kenny@kenny-MS-7850$ echo extra credit rocks |\ cat      cat
+extra credit rocks
+kenny@kenny-MS-7850$ cat <<< "extra credit rocks"
+extra credit rocks
+kenny@kenny-MS-7850$ cat <<< "H hello this is a string"
+hello this is a string
+kenny@kenny-MS-7850$ cat <<< "hell lo string" > cat   file
+kenny@kenny-MS-7850$ cat file
+hello string
+kenny@kenny-MS-7850$ #Testing extra credit 2
+kenny@kenny-MS-7850$ g++ error.cpp
+error.cpp:6:2: error: expected declaration before ‘}’ token
+ }}
+  ^
+kenny@kenny-MS-7850$ g++ error.cpp 2> errors
+kenny@kenny-MS-7850$ cat errors
+error.cpp:6:2: error: expected declaration before ‘}’ token
+ }}
+  ^
+kenny@kenny-MS-7850$ g++ error.cpp 2>> errors
+kenny@kenny-MS-7850$ cat errors
+error.cpp:6:2: error: expected declaration before ‘}’ token
+ }}
+  ^
+error.cpp:6:2: error: expected declaration before ‘}’ token
+ }}
+  ^
+kenny@kenny-MS-7850$ ls 1>fiel  le
+kenny@kenny-MS-7850$ cat file
+bin
+error.cpp
+errors
+file
+LICENSE
+list
+Makefile
+README.md
+sortedfile
+sortedlist
+src
+tests
+kenny@kenny-MS-7850$ ls 2>file
+bin  error.cpp	errors	file  LICENSE  list  Makefile  README.md  sortedfile  sortedlist  src  tests
+kenny@kenny-MS-7850$ cat file
+kenny@kenny-MS-7850$ ls -l 1> file
+kenny@kenny-MS-7850$ g++ errors.cpp 2>> file
+kenny@kenny-MS-7850$ cat file
+total 44
+drwxrwxr-x 2 kenny kenny 4096 Nov 17 22:20 bin
+-rw-rw-r-- 1 kenny kenny   99 Nov 17 22:13 error.cpp
+-rw------- 1 kenny kenny  144 Nov 17 22:31 errors
+-rw------- 1 kenny kenny    0 Nov 17 22:31 file
+-rw-rw-r-- 1 kenny kenny 1076 Nov 14 15:34 LICENSE
+-rw-rw-r-- 1 kenny kenny   53 Nov 17 21:15 list
+-rw-rw-r-- 1 kenny kenny  341 Nov 17 21:54 Makefile
+-rw-rw-r-- 1 kenny kenny 2618 Nov 17 21:45 README.md
+-rw------- 1 kenny kenny   61 Nov 17 22:26 sortedfile
+-rw------- 1 kenny kenny  106 Nov 17 22:29 sortedlist
+drwxrwxr-x 2 kenny kenny 4096 Nov 17 22:28 src
+drwxrwxr-x 2 kenny kenny 4096 Nov 17 22:20 tests
+g++: error: errors.cpp: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+kenny@kenny-MS-7850$ g++ error.cpp 2>> file
+kenny@kenny-MS-7850$ cat file
+total 44
+drwxrwxr-x 2 kenny kenny 4096 Nov 17 22:20 bin
+-rw-rw-r-- 1 kenny kenny   99 Nov 17 22:13 error.cpp
+-rw------- 1 kenny kenny  144 Nov 17 22:31 errors
+-rw------- 1 kenny kenny    0 Nov 17 22:31 file
+-rw-rw-r-- 1 kenny kenny 1076 Nov 14 15:34 LICENSE
+-rw-rw-r-- 1 kenny kenny   53 Nov 17 21:15 list
+-rw-rw-r-- 1 kenny kenny  341 Nov 17 21:54 Makefile
+-rw-rw-r-- 1 kenny kenny 2618 Nov 17 21:45 README.md
+-rw------- 1 kenny kenny   61 Nov 17 22:26 sortedfile
+-rw------- 1 kenny kenny  106 Nov 17 22:29 sortedlist
+drwxrwxr-x 2 kenny kenny 4096 Nov 17 22:28 src
+drwxrwxr-x 2 kenny kenny 4096 Nov 17 22:20 tests
+g++: error: errors.cpp: No such file or directory
+g++: fatal error: no input files
+compilation terminated.
+error.cpp:6:2: error: expected declaration before ‘}’ token
+ }}
+  ^
+kenny@kenny-MS-7850$ #This ends the testing script of hw2 piping
+kenny@kenny-MS-7850$ ^C
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ exit
+
+Script done on Mon 17 Nov 2014 10:32:40 PM PST
