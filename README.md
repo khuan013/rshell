@@ -41,7 +41,16 @@ Connectors work based on the most recent command. If the command before an &&
 did not succeed, no further commands will be executed. If a command before an
 || does succeed, no further commands will be executed.
 
-Also displays the user and hostname of the machine the user is logged into.
+**IO Redirection**
+
+Rshell supports: 
+* input redirection with `<`
+* output redirection with `>` and `>>`
+* piping with `|`
+* redirecting from string with `<<<`
+* output redirection with file descriptors by placing a number before `>` or `>>`
+
+Like bash, if chaining together multiple input redirections or multiple output redirections, only the last one will be used.
 
 ls
 ---
@@ -80,9 +89,8 @@ Bugs and Limitations
 
 rshell
 ---
-* When running the program in a script on local machine,
-the getlogin() function causes an error.
-* Does not handle comments # in quotations marks when using echo.
+* Does not error check number of `<` or `>`. For example, `ls >>> hello` will result in an error.
+* Does not check for regular expressions.
 
 ls
 ---
