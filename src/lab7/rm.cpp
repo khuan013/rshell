@@ -1,5 +1,4 @@
 #include <string>
-#include <string.h>
 #include <cstring>
 #include <vector>
 #include <sys/types.h>
@@ -102,6 +101,62 @@ bool is_file(const char* pathname)
         return false;
 }
 
+void removeDir(string dirname) {
+
+	DIR * dp;
+	struct dirent *dt;
+	struct stat statbuf;
+	int status = 0;	
+
+	vector<string> filename;
+
+	if ((dp = opendir(dirname.c_str())) == NULL) {
+		perror("opendir");
+		return;
+	}
+	
+	
+	while ((dt = readdir(dp)) != NULL) {
+		if (dt->d_name[0] == '.')
+			continue;
+		string tmp = dirname + "/" + dt->d_name;
+		//cerr << "tmp: " << tmp << endl;
+		filename.push_back(tmp);
+	}
+
+	closedir(dp);
+
+	if ((dp=opendir(dirname.c_str()))== NULL) {
+		perror("opendir");
+		return;
+	}
+	
+	while ((dt = readdir(dp))) if (strncmp(dt->d_name, ".", 1)) {
+		if (dt->d_type == 4) {
+			string dirPath = dirname + "/" + dt->d_name;
+			removeDir(dirPath);
+		}
+	}
+
+	
+	for (int i = 0; i < filename.size(); i++) {
+		if (!is_dir(filename[i].c_str())) {
+			//cerr << "file name: " << filename[i] << endl;
+			if (unlink(filename[i].c_str()) == -1)
+				perror("unlink");
+		}
+
+		else{
+			//cerr << "dir name: " << filename[i] << endl;
+			if (rmdir(filename[i].c_str()) == -1)
+				perror("rmdir");
+		}
+	}
+
+	closedir(dp);
+
+}
+
 void check( char ** argv )
 {
 	for(unsigned i = 1; argv[i] != NULL ; ++i)
@@ -127,12 +182,9 @@ void check( char ** argv )
 			else continue; 
 		}
 		else{ //if( is_dir(argv[i])) { 
-			if(rmdir(argv[i]) == -1)
-			{
-				perror("rmdir"); 
-			}
-		}
-	    
+	   		removeDir(argv[i]);
+			rmdir(argv[i]);
+		} 
 
 	}
 }
