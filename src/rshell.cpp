@@ -10,9 +10,20 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <pwd.h>
+#include <signal.h>
+
 
 using namespace std;
 
+
+void parsePath(char * line, vector<string> &pathing) {
+    char * pch;
+    pch = strtok(line, ":");
+    while (pch!=NULL) {
+        pathing.push_back(pch);
+        pch = strtok(NULL, ":");
+    }
+}
 
 void parse(char * line, vector<string> & input) {
      
@@ -145,42 +156,38 @@ void parse(char * line, vector<string> & input) {
 	}
 }
 
-void execute(const vector<string> & input, int start, int end) {
+void execute(const vector<string> & input, const vector<string> & pathing,
+        int start, int end) {
 
     //Call execvp, based on which elements in the string vector to use
     char * argv[20];
 	    
 	    int i = 0;
-	    
+	    int status;
+
 	    for (i = 0; i <= (end - start); i++) {
 		argv[i] = new char[20];
 	    }
 
 	    for (i = 0; i < (end-start); i++) {
 		strcpy(argv[i], input[i+start].c_str());
-        }
+            }
 	    
 	    argv[i] = NULL;
+            string cmd = argv[0];
 
-	    int status = execvp(argv[0], argv);
+            for (int j = 0; j < pathing.size(); j++) {
+                string tmp = pathing[j] + "/" + cmd;
+                strcpy(argv[0], tmp.c_str());
+                status = execv(argv[0], argv);
+                
+            }
 	    if (status == -1)
-		perror("execvp");
+		perror("execv");
 		exit(1); 
 }
 
-
-int main() {
-
-    vector<string> input; 
-    int status=0;
-
-    int savestdin;
-    if ((savestdin = dup(0)) == -1)
-        perror("dup");
-
-    int savestdout;
-    if ((savestdout = dup(1)) == -1)
-        perror("dup");
+void printusrhost() {
 
     // Get username
     char * usrname;
@@ -198,25 +205,61 @@ int main() {
 	perror("gethostname");
 	exit(1);
     }
+    cout << usrname << "@" << hostname <<"$ ";
+
+}
+
+void int_handler(int x) {
+        cout << endl;
+        printusrhost();
+        cout.flush();
+}
+
+
+int main() {
+
+    signal(SIGINT, int_handler);
+    
+    int parent = getpid();
+    cerr << "parent: " << parent << endl;
+
+    vector<string> input; 
+    vector<string> pathing;
+    int status=0;
+    char *pPath;
+    
+    pPath = getenv("PATH");
+	if (pPath == NULL)
+	    perror("PATH");
+    parsePath(pPath, pathing);
+
+
+    int savestdin;
+    if ((savestdin = dup(0)) == -1)
+        perror("dup");
+
+    int savestdout;
+    if ((savestdout = dup(1)) == -1)
+        perror("dup");
+
 
 
 
     // Main loop
     while (1) {
-
-   	 //Restore stdin and stdout
+        //Restore stdin and stdout
         if ((dup2(savestdin,0)) == -1)
             perror("dup2");
 
         if ((dup2(savestdout,0)) == -1)
             perror("dup2");
+	printusrhost();
 
 	status = 0;
 
 	if (input.size() != 0)
 	    input.clear();
 		
-	cout << usrname << "@" << hostname <<"$ ";
 
 	string string1;
 	getline(cin, string1);
@@ -245,8 +288,6 @@ int main() {
         perror ("fork");
 	int pid2;
 	if (pid == 0) {
-	    
-
 	    int start = 0;
 	    int end = input.size();
 	    unsigned i;
@@ -361,7 +402,8 @@ loop:
                         if ((dup2(pfd[0], 0)) == -1)
                             perror("dup2");
 
-                        close (pfd[1]);
+                        if (close (pfd[1]) == -1)
+                            perror("close");
                             
                         input.erase(input.begin() + i);
                         input.erase(input.begin() + i);
@@ -454,7 +496,7 @@ loop:
         }
 
 
-	    execute(input, start, end);
+	    execute(input, pathing, start, end);
 
 	}   	
 	else { 
