@@ -299,26 +299,24 @@ int main() {
 	    unsigned i;
 		
 loop:		
-	    bool rancd = false;
         end = input.size();
 	    
         for (i = start; i < input.size(); ) {
             
-            //chdir command
-            if (strcmp(input[i].c_str(), "cd") == 0) {
-                rancd = true;
+            if (input[i] == "cd") {
                 string directory =  input[i+1];
                 int ret;
                 ret = chdir(directory.c_str());
                 if (ret == -1) 
                     perror ("chdir");
 
-                if ((input[i+2] == ";" || input[i+2] == "&&") && (i+3 < input.size())) { 
+                if ((i+2) >= input.size())
+                    exit(0);
+                else if (input[i+2] == ";" || input[i+2] == "&&") {
                     start = i+3;
-                    goto loop;
+                    goto loop;   
                 }
-                else
-                    break;
+
             }
 
             //input output redirection
@@ -521,15 +519,26 @@ loop:
 	    i++; 
         }
 
-        if (rancd == false) 
-	        execute(input, pathing, start, end);
+	    execute(input, pathing, start, end);
 
 	}   	
 	else { 
 	    status = wait(NULL);
 	    if (status == -1)
 		perror("wait");
-	}
+	 
+            //chdir command
+        for (int i = 0; i < input.size(); i++) {
+            if (strcmp(input[i].c_str(), "cd") == 0) {
+                string directory =  input[i+1];
+                int ret;
+                ret = chdir(directory.c_str());
+                if (ret == -1) 
+                    perror ("chdir");
+                
+            }
+        }
+    }
     }
    
 
