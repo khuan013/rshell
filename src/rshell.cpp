@@ -17,24 +17,36 @@ using namespace std;
 
 
 void parsePath(char * line, vector<string> &pathing) {
+    
+    if (line == NULL)
+        return;
+
     char * pch;
     pch = strtok(line, ":");
     while (pch!=NULL) {
-        pathing.push_back(pch);
+        string tmp = pch;
+        pathing.push_back(tmp);
         pch = strtok(NULL, ":");
     }
 }
 
 void parse(char * line, vector<string> & input) {
      
+    if (line == NULL)
+        return;
+
     char * pch;
     int find_quote = 0;
 	pch = strtok (line, " \n");
 	while (pch!= NULL) {
-        
-        find_quote = 0;
+      
+        if (pch == NULL)
+                break;
 
-        if (*(pch + strlen(pch) + 1) == '"')
+        find_quote = 0;
+        if ((pch + strlen(pch) + 1) == NULL)
+                cerr << "hello\n";
+        if (((pch +strlen(pch) +1) != NULL) && (*(pch + strlen(pch) + 1) == '"'))
             find_quote = 1;
                     
 	    // Ignore after comments
@@ -176,7 +188,7 @@ void execute(const vector<string> & input, const vector<string> & pathing,
 	    argv[i] = NULL;
             string cmd = argv[0];
 
-            for (int j = 0; j < pathing.size(); j++) {
+            for (unsigned int j = 0; j < pathing.size(); j++) {
                 string tmp = pathing[j] + "/" + cmd;
                 strcpy(argv[0], tmp.c_str());
                 status = execv(argv[0], argv);
@@ -211,17 +223,14 @@ void printusrhost() {
 
 void int_handler(int x) {
         cout << endl;
-        printusrhost();
-        cout.flush();
 }
 
 
 int main() {
 
-    signal(SIGINT, int_handler);
+    if ((signal(SIGINT, int_handler)) == SIG_ERR)
+        perror("signal");
     
-    int parent = getpid();
-    cerr << "parent: " << parent << endl;
 
     vector<string> input; 
     vector<string> pathing;
@@ -253,7 +262,8 @@ int main() {
 
         if ((dup2(savestdout,0)) == -1)
             perror("dup2");
-	printusrhost();
+	
+    printusrhost();
 
 	status = 0;
 
@@ -263,24 +273,20 @@ int main() {
 
 	string string1;
 	getline(cin, string1);
-	char * line = new char [string1.length() + 1];
-	strcpy(line, string1.c_str());
 
-	parse(line, input);
+	parse((char *)string1.c_str(), input);
 
     //debugging
     //cerr << "AFTER PARSING: \n";
     //for (int i = 0; i < input.size(); i++)
             //cerr << input[i] << endl;
 
-	delete line;
 
 	if (input.size() == 0)
 	    continue;
 
-    for (unsigned int i = 0; i < input.size(); i++) {
+    for (unsigned int i = 0; i < input.size(); i++) 
 	    if (strcmp(input[i].c_str(), "exit") == 0) exit(0);
-    }
 
 
 	int pid=fork();
@@ -293,9 +299,28 @@ int main() {
 	    unsigned i;
 		
 loop:		
-	    end = input.size();
+	    bool rancd = false;
+        end = input.size();
 	    
         for (i = start; i < input.size(); ) {
+            
+            //chdir command
+            if (strcmp(input[i].c_str(), "cd") == 0) {
+                rancd = true;
+                string directory =  input[i+1];
+                int ret;
+                ret = chdir(directory.c_str());
+                if (ret == -1) 
+                    perror ("chdir");
+
+                if ((input[i+2] == ";" || input[i+2] == "&&") && (i+3 < input.size())) { 
+                    start = i+3;
+                    goto loop;
+                }
+                else
+                    break;
+            }
+
             //input output redirection
             if (input[i] == ">" || input[i] == ">>" || input[i]=="<" 
                             || input[i] == "<<<" || input[i] == "|"
@@ -368,7 +393,6 @@ loop:
                             perror("close");
                         
                         input.erase(input.begin() + i);
-
                         input.erase(input.begin() + i);
                         
                         if (input[i][0] == '>' || input[i][0] == '<' || input[i][0] == '|'
@@ -464,9 +488,11 @@ loop:
                 }
             }
         
-
+            
             else if (input[i] == ";" || input[i] == "&&" || input[i] == "||") {
-		        string connector = input[i];
+		        
+
+                string connector = input[i];
 
 		        pid2 = fork();
 		        if (pid2 == -1) {
@@ -495,8 +521,8 @@ loop:
 	    i++; 
         }
 
-
-	    execute(input, pathing, start, end);
+        if (rancd == false) 
+	        execute(input, pathing, start, end);
 
 	}   	
 	else { 
@@ -505,6 +531,9 @@ loop:
 		perror("wait");
 	}
     }
+   
+
+   
     
-    return 0; 
+    exit(0); 
 }
