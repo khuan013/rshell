@@ -171,7 +171,7 @@ void parse(char * line, vector<string> & input) {
 void execute(const vector<string> & input, const vector<string> & pathing,
         int start, int end) {
 
-    //Call execvp, based on which elements in the string vector to use
+    //Call execv, based on which elements in the string vector to use
     char * argv[20];
 	    
 	    int i = 0;
