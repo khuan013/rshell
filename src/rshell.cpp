@@ -16,18 +16,23 @@
 using namespace std;
 
 
-void parsePath(char * line, vector<string> &pathing) {
+void parsePath(const char * line, vector<string> &pathing) {
     
     if (line == NULL)
         return;
+    char * s = strdup(line);
+    if (!s)
+        exit(1);
 
     char * pch;
-    pch = strtok(line, ":");
+    pch = strtok(s, ":");
     while (pch!=NULL) {
-        string tmp = pch;
+        string tmp = string(pch);
         pathing.push_back(tmp);
         pch = strtok(NULL, ":");
     }
+
+    free(s);
 }
 
 void parse(char * line, vector<string> & input) {
@@ -42,6 +47,8 @@ void parse(char * line, vector<string> & input) {
       
         if (pch == NULL)
                 break;
+
+     
 
         find_quote = 0;
         if ((pch + strlen(pch) + 1) == NULL)
@@ -62,7 +69,7 @@ void parse(char * line, vector<string> & input) {
         char * e = strstr(pch, ">");
         char * f = strstr(pch, "|");
 
-	    // If there are connectors, break up the string
+        	    // If there are connectors, break up the string
 	    // into parts and add them individually to the vector
 	    if (a!=NULL || b!=NULL || c!=NULL || d!=NULL || e!=NULL || f!=NULL
                     || (isdigit(*pch) && pch[1] == '>')) {
@@ -217,7 +224,15 @@ void printusrhost() {
 	perror("gethostname");
 	exit(1);
     }
-    cout << usrname << "@" << hostname <<"$ ";
+
+    //get cwd
+    char cwd[512];
+    if (getcwd(cwd, sizeof(cwd)) == NULL) {
+        perror("cwd");
+        exit(1);
+    }
+
+    cout << usrname << "@" << hostname << ":" << cwd << "$ ";
 
 }
 
@@ -231,17 +246,18 @@ int main() {
     if ((signal(SIGINT, int_handler)) == SIG_ERR)
         perror("signal");
     
-
     vector<string> input; 
     vector<string> pathing;
     int status=0;
-    char *pPath;
     
+    const char *pPath;
     pPath = getenv("PATH");
 	if (pPath == NULL)
 	    perror("PATH");
+   
     parsePath(pPath, pathing);
-
+   
+    
 
     int savestdin;
     if ((savestdin = dup(0)) == -1)
@@ -285,9 +301,10 @@ int main() {
 	if (input.size() == 0)
 	    continue;
 
+    
     for (unsigned int i = 0; i < input.size(); i++) 
-	    if (strcmp(input[i].c_str(), "exit") == 0) exit(0);
-
+	    if (strcmp(input[i].c_str(), "exit") == 0) return 0;
+    
 
 	int pid=fork();
     if (pid == -1)
@@ -528,7 +545,7 @@ loop:
 		perror("wait");
 	 
             //chdir command
-        for (int i = 0; i < input.size(); i++) {
+        for (unsigned int i = 0; i < input.size(); i++) {
             if (strcmp(input[i].c_str(), "cd") == 0) {
                 string directory =  input[i+1];
                 int ret;
@@ -544,5 +561,5 @@ loop:
 
    
     
-    exit(0); 
+    return 0; 
 }
