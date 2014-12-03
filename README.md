@@ -35,7 +35,7 @@ It can take in multiple commands using the connectors, `&&` `||` and `;`.
 Uses `wait()`, `fork()` and  `execvp()` to call functions.
 
 Parses the input by breaking it up into a string vector, and then determines
-which elements should be sent to execvp.
+which elements should be sent to execv.
 
 Connectors work based on the most recent command. If the command before an &&
 did not succeed, no further commands will be executed. If a command before an
@@ -51,6 +51,10 @@ Rshell supports:
 * output redirection with file descriptors by placing a number before `>` or `>>`
 
 Like bash, if chaining together multiple input redirections or multiple output redirections, only the last one will be used.
+
+Rshell searches through the user's current PATH environment variable for commands. Rshell no longer exits when the user typoes `^C`.
+
+Rshell now supports `cd` which allows the user to change the current working directory.
 
 ls
 ---
