@@ -1,0 +1,94 @@
+Script started on Tue 02 Dec 2014 09:14:48 PM PST
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ #This is the testing script for h[KHW3 s[K[K[K[K[Khw3-signals
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ #Kenneth Huang
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ #s[KSearching for execvp in rshe[K[K[K[Kso[K[Krshell.cpp
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ ls src
+[0m[01;32ma.out[0m  cp.cpp  [01;34mlab7[0m  ls.cpp  rshell.cpp
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ cat src/rshell.cpp | grep execvp
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ #searching for execv
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ #searching for execvcat src/rshell.cpp | grep execvp[K[K[K[K[K[Kexecv
+    //Call [01;31m[Kexecv[m[K, based on which elements in the string vector to use
+                status = [01;31m[Kexecv[m[K(argv[0], argv);
+		perror("[01;31m[Kexecv[m[K");
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ #compiling[K[K[K[K[K[K[K[Kalling make
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ make all
+mkdir -p bin
+cd src && g++ -Wall -Werror -ansi -pedantic -o rshell rshell.cpp &&\
+	mv rshell ../bin
+mkdir -p bin
+cd src && g++ -Wall -Werror -ansi -pedantic -o ls ls.cpp &&\
+	mv ls ../bin
+mkdir -p bin
+cd src && g++ -Wall -Werror -ansi -pedantic -o cp cp.cpp && \
+		mv cp ../bin
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ #running rshell
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ bin/rshell
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ #testing execv works
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ ls
+bin  LICENSE  Makefile	README.md  src	tests
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ pwd
+/home/kenny/Documents/cs100/rshell
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ date
+Tue Dec  2 21:17:47 PST 2014
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ clear
+[H[2Jkenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ ls -a
+.  ..  bin  .git  LICENSE  Makefile  README.md	src  tests
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ who
+kenny    :0           2014-12-02 19:09 (:0)
+kenny    pts/0        2014-12-02 19:12 (:0)
+kenny    pts/7        2014-12-02 19:17 (:0)
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ tee     ls |\ tee file           tee file
+bin
+LICENSE
+Makefile
+README.md
+src
+tests
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ ls
+bin  file  LICENSE  Makefile  README.md  src  tests
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ cat file
+bin
+LICENSE
+Makefile
+README.md
+src
+tests
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ rm file
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ #sh  rshell is able to find ls and tee
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ #Cgecj     heckin      Checking if rshell exits when user types ^C
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ ^C
+
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ ls
+bin  LICENSE  Makefile	README.md  src	tests
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ #ch  Checking if ^C works with cat
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ cat
+^C
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ #Success
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ #now checking implementation fo  of CD  cd
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ ls
+bin  LICENSE  Makefile	README.md  src	tests
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ cd src
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell/src$ ls
+a.out  cp.cpp  lab7  ls.cpp  rshell.cpp
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell/src$ cd ..
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ ls
+bin  LICENSE  Makefile	README.md  src	tests
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ cd  #Testing cd with connectors
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ cd bin; pwd
+/home/kenny/Documents/cs100/rshell/bin
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell/bin$ ls -l;  && cd ..
+total 108
+-rwxrwxr-x 1 kenny kenny 18953 Dec  2 21:16 cp
+-rwxrwxr-x 1 kenny kenny 45030 Dec  2 21:16 ls
+-rwxrwxr-x 1 kenny kenny 43222 Dec  2 21:16 rshell
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ ls
+bin  LICENSE  Makefile	README.md  src	tests
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ cd src; ls; cd ..; ls
+a.out  cp.cpp  lab7  ls.cpp  rshell.cpp
+bin  LICENSE  Makefile	README.md  src	tests
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ #this    This concludes the testing script for hw-3  3-signals
+kenny@kenny-MS-7850:/home/kenny/Documents/cs100/rshell$ exit
+]0;kenny@kenny-MS-7850: ~/Documents/cs100/rshellkenny@kenny-MS-7850:~/Documents/cs100/rshell$ exit
+exit
+
+Script done on Tue 02 Dec 2014 09:22:28 PM PST
